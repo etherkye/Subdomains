@@ -157,7 +157,7 @@ class PluginDmPageTable extends myDoctrineTable
     }
     
     $pages = $this->createQuery('p')
-    ->select('p.id, p.module, p.action, p.record_id, pTranslation.is_secure, p.lft, p.rgt, pTranslation.slug, pTranslation.name, pTranslation.title, pTranslation.is_active')
+    ->select('p.id, p.module, p.action, p.record_id, pTranslation.is_secure, p.lft, p.rgt, pTranslation.slug, pTranslation.name, pTranslation.title, pTranslation.is_active, pTranslation.subdomain')
     ->where('p.module = ?', $module)
     ->andWhere('p.action = ?', 'show')
     ->andWhereIn('p.record_id', $ids)
@@ -173,26 +173,32 @@ class PluginDmPageTable extends myDoctrineTable
     unset($pages);
   }
 
-  public function isSlugUnique($slug, $id)
+ public function isSlugUnique($slug, $id, $subdomain = null)
   {
-    return !$this->getI18nTable()->createQuery('pt')
+    $page = $this->getI18nTable()->createQuery('pt')
     ->where('pt.lang = ?', dmDoctrineRecord::getDefaultCulture())
     ->andwhere('pt.id != ?', $id ? $id : 0)
-    ->andWhere('pt.slug = ?', $slug)
-    ->exists();
+    ->andWhere('pt.slug = ?', $slug);
+    if(!is_null($subdomain)){
+        $page->andWhere('pt.subdomain = ?', $subdomain);
+    }
+    return !$page->exists();
   }
 
-  public function createUniqueSlug($slug, $id, $parentSlug = null)
+  public function createUniqueSlug($slug, $id, $parentSlug = null,$subdomain = null)
   {
     if(null === $parentSlug)
     {
       $parentSlug = $this->getI18nTable()->createQuery('pt')
-      ->where('pt.id = ?', $this->findOneById($id)->getNodeParentId())
-      ->andWhere('pt.lang = ?', dmDoctrineRecord::getDefaultCulture())
+      ->where('pt.id = ?', $this->findOneById($id)->getNodeParentId());
+      if(!is_null($subdomain)){
+          $parentSlug->andWhere('pt.subdomain = ?', $subdomain);
+      }
+      $parentSlug->andWhere('pt.lang = ?', dmDoctrineRecord::getDefaultCulture())
       ->select('pt.slug')
       ->fetchValue();
     }
-    
+
     if($slug == $parentSlug)
     {
       $slug .= '/'.$id;
@@ -201,7 +207,7 @@ class PluginDmPageTable extends myDoctrineTable
     {
       $slug .= '-'.$id;
     }
-    
+
     return $slug;
   }
   
@@ -297,12 +303,16 @@ class PluginDmPageTable extends myDoctrineTable
     ->fetchRecord();
   }
   
-  public function findOneBySlug($slug, $culture = null)
+
+  public function findOneBySlug($slug, $culture = null,$subdomain = null)
   {
-    return $this->createQuery('p')
+     $page = $this->createQuery('p')
     ->withI18n($culture, null, 'p', 'inner')
-    ->where('pTranslation.slug = ?', $slug)
-    ->fetchOne();
+    ->where('pTranslation.slug = ?', $slug);
+     if(!is_null($subdomain)){
+        $page->andWhere('pTranslation.subdomain = ?', $subdomain);
+     }
+    return $page->fetchOne();
   }
 
   public function findByLevelWithI18n($level, $culture = null)

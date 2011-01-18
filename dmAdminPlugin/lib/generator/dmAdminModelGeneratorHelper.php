@@ -43,7 +43,7 @@ abstract class dmAdminModelGeneratorHelper extends sfModelGeneratorHelper
 
     return
     '<li class="sf_admin_action_view_page">'.
-    _link('app:front/'.$page->get('slug'))
+    _link('app:front|'.$page->get('subdomain').'/'.$page->get('slug'))
     ->title(__($params['title'], array('%1%' => dmString::strtolower(__($this->getModule()->getName()))), $this->getI18nCatalogue()))
     ->text(__($params['label'], array(), 'dm'))
     ->set('.s16.s16_file_html.sf_admin_action')

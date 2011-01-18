@@ -1,6 +1,6 @@
 <?php
 
-/**
+/** CODE CHANGES FOR
  * PluginDmAutoSeo form.
  *
  * @package    form
@@ -23,6 +23,7 @@ abstract class PluginDmAutoSeoForm extends BaseDmAutoSeoForm
     
     $this->widgetSchema->setHelps(array(
       'slug' => 'The page url, without domain name. Must be unique. If the slug does not start with a \'/\', the parent slug is added.',
+      'subdomain' => 'The page subdomain. If not subdomain is added the parent subdomain is added.',
       'title' => 'The page title, without prefix nor suffix. Should be unique.',
       'name' => 'The page name, used by links to this page. Should be unique.',
       'h1' => 'Assign first header here or let it blank to let the designer choose it. Should be unique.',

@@ -10,6 +10,7 @@ class dmAdminPageMetaView
     'lft' => 'Position',
     'name' => 'Name',
     'slug' => 'Url',
+    'subdomain' => 'Sub Domain',
     'title' => 'Title',
     'h1' => 'H1',
     'description' => 'Description',

@@ -16,7 +16,7 @@ abstract class PluginDmPage extends BaseDmPage
   $nameBackup;
 
   protected static
-  $autoSeoFields = array('slug', 'name', 'title', 'h1', 'description', 'keywords');
+  $autoSeoFields = array('slug', 'subdomain', 'name', 'title', 'h1', 'description', 'keywords');
 
   /**
    * Is this page source referring to me ?
@@ -226,7 +226,7 @@ LIMIT 1')->getStatement();
           ));
         }
       }
-      
+
       $this->getPageView();
 
       if ($this->getDmModule() && $this->getIsAutomatic() && !$record instanceof dmDoctrineRecord)
@@ -241,16 +241,16 @@ LIMIT 1')->getStatement();
     $translationModifiedFields = $this->hasCurrentTranslation() ? $this->getCurrentTranslation()->getModified() : array();
 
     parent::save($conn);
-    
+
     if(array_key_exists('slug', $translationModifiedFields))
     {
-      if(!$this->getTable()->isSlugUnique($this->get('slug'), $this->get('id')))
+      if(!$this->getTable()->isSlugUnique($this->get('slug'), $this->get('id'),$this->get('subdomain')))
       {
-        $this->set('slug', $this->getTable()->createUniqueSlug($this->get('slug'), $this->get('id')));
+        $this->set('slug', $this->getTable()->createUniqueSlug($this->get('slug'), $this->get('id'), null, $this->get('subdomain')));
         return $this->save();
       }
     }
-  
+
     if ($dispatcher = $this->getEventDispatcher())
     {
       $dispatcher->notify(new sfEvent($this, 'dm.page.post_save'));

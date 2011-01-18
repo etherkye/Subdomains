@@ -12,7 +12,7 @@ class dmScriptNameResolver
     $this->culture        = $culture;
   }
   
-  public function get($app = null, $env = null, $culture = null)
+  public function get($app = null, $env = null, $culture = null, $subdomain = "DEFAULT")
   {
     $app = null === $app ? sfConfig::get('sf_app') : $app;
     $env = null === $env ? sfConfig::get('sf_environment') : $env;
@@ -35,8 +35,12 @@ class dmScriptNameResolver
       {
         throw new dmException(sprintf('Diem can not guess %s app url', $app));
       }
-
-      $appUrl = $this->requestContext['absolute_url_root'].'/'.$script;
+        if ($subdomain == "DEFAULT") {
+            $appUrl = $this->requestContext['absolute_url_root'] .'/'.$script;
+        }else{
+            $appUrl = implode('://'.$subdomain.'.',explode('://',$this->requestContext['absolute_url_root'])) .'/'.$script;
+        }
+      
     }
 
     return $appUrl;

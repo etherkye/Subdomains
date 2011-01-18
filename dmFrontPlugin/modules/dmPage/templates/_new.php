@@ -10,6 +10,7 @@ echo _tag('div.form',
     $form['parent_id']->renderRow().
     $form['name']->renderRow().
     $form['slug']->renderRow().
+    $form['subdomain']->renderRow().
     $form['dm_layout_id']->renderRow()
   ).
   sprintf(

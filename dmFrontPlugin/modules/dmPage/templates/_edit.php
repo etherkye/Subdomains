@@ -25,6 +25,7 @@ echo _tag('div.dm.dm_page_edit_wrap',
     _tag('div#dm_page_edit_seo',
       _tag('ul.dm_form_elements',
         $form['slug']->renderRow().
+        $form['subdomain']->renderRow().
         $form['name']->renderRow().
         $form['title']->renderRow().
         $form['h1']->renderRow().
@@ -64,10 +65,10 @@ echo _tag('div.dm.dm_page_edit_wrap',
     $deletePageLink ? _link('+/dmPage/delete')->param('id', $page->get('id'))->set('.dm.delete.button.red.ml10.left.dm_js_confirm')->text(__('Delete'))->title(__('Delete this page')) : '',
     sprintf('<input type="submit" class="submit and_save green fright" name="and_save" value="%s" />', __('Save'))
   ).
-  
+
   sprintf("<div class='dm_seo_max_lengths %s'></div>",
     json_encode(sfConfig::get('dm_seo_truncate', array()))
   ).
-  
+
   $form->close()
 );

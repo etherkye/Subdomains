@@ -49,138 +49,112 @@ class dmAdminLinkTag extends dmBaseLinkTag
     }
   }
 
-  protected function getBaseHref()
-  {
-    if(is_string($this->resource))
-    {
-      $resource = $this->resource;
-      
-      /**
-       * If a blank space is found in the source,
-       * remove characters after it
-       * because they are just a comment
-       * ex : page:1?var=val Home
-       */
-      if ($blankSpacePos = strpos($resource, ' '))
-      {
-        $resource = substr($resource, 0, $blankSpacePos);
-      }
-      
-      if (strncmp($resource, 'page:', 5) === 0)
-      {
-        $pageResource = preg_replace('|^(page:\d+).*$|', '$1', $resource);
-        
-        if ($page = dmDb::table('DmPage')->findOneBySource($pageResource))
-        {
-          $resource = preg_replace('|^page:\d+(.*)$|', 'app:front/'.$page->get('slug').'$1', $resource);
-        }
-        else
-        {
-          throw new dmException(sprintf('%s is not a valid link resource', $resource));
-        }
-      }
-      elseif(strncmp($resource, 'media:', 6) === 0)
-      {
-        $mediaResource = preg_replace('|^media:(\d+).*|', '$1', $resource);
-        
-        if ($media = dmDb::table('DmMedia')->findOneByIdWithFolder($mediaResource))
-        {
-          $resource = '/'.$media->getWebPath();
-          /*
-           * add relativeUrlRoot to absolute resource
-           */
-          if($relativeUrlRoot = dmArray::get($this->serviceContainer->getParameter('request.context'), 'relative_url_root'))
-          {
-            $resource = $relativeUrlRoot.$resource;
-          }
-        }
-        else
-        {
-          throw new dmException(sprintf('%s is not a valid media resource. The media with id %s does not exist', $resource, $mediaResource));
-        }
-      }
+   protected function getBaseHref() {
+        if (is_string($this->resource)) {
+            $resource = $this->resource;
 
-      if (strncmp($resource, 'app:', 4) === 0)
-      {
-        $type = 'uri';
-        $app = substr($resource, 4);
-        /*
-         * A slug may be added to the app name, extract it
-         */
-        if ($slashPos = strpos($app, '/'))
-        {
-          $slug = substr($app, $slashPos);
-          $app  = substr($app, 0, $slashPos);
-        }
-        else
-        {
-          $slug = '';
-        }
-        
-        $resource = $this->serviceContainer->getService('script_name_resolver')->get($app).$slug;
-      }
-      elseif ($resource{0} === '/')
-      {
-        $resource = $resource;
-        
-        /*
-         * add relativeUrlRoot to absolute resource
-         */
-        if(($relativeUrlRoot = dmArray::get($this->serviceContainer->getParameter('request.context'), 'relative_url_root')) && (strpos($resource, $relativeUrlRoot) !== 0))
-        {
-          $resource = $relativeUrlRoot.$resource;
-        }
-      }
-      elseif(strncmp($resource, '+/', 2) === 0)
-      {
-        $resource = substr($resource, 2);
-      }
-    }
-    elseif(is_array($this->resource))
-    {
-      if(isset($this->resource[1]) && is_object($this->resource[1]))
-      {
-        $resource =array(
-          'sf_route' => $this->resource[0],
-          'sf_subject' => $this->resource[1]
-        );
-      }
-      else
-      {
-        $resource = $this->resource;
-      }
-    }
+            /**
+             * If a blank space is found in the source,
+             * remove characters after it
+             * because they are just a comment
+             * ex : page:1?var=val Home
+             */
+            if ($blankSpacePos = strpos($resource, ' ')) {
+                $resource = substr($resource, 0, $blankSpacePos);
+            }
 
-    elseif(is_object($this->resource) && $this->resource instanceof dmDoctrineRecord)
-    {
-      if($this->resource instanceof DmPage)
-      {
-        $resource = $this->serviceContainer->getService('script_name_resolver')->get('front').'/'.$this->resource->get('slug');
-      }
-      elseif (($module = $this->resource->getDmModule()) && $module->hasAdmin())
-      {
-        $resource = array(
-          'sf_route' => $module->getUnderscore(),
-          'action'   => 'edit',
-          'pk'       => $this->resource->getPrimaryKey()
-        );
-      }
-    }
-    
-    if(isset($resource))
-    {
-      if (is_string($resource) && (strncmp($resource, '#', 1) === 0 || strncmp($resource, 'mailto:', 7)  === 0))
-      {
-        return $resource;
-      }
-      else
-      {
-        return $this->serviceContainer->getService('controller')->genUrl($resource);
-      }
-    }
+            if (strncmp($resource, 'page:', 5) === 0) {
+                $pageResource = preg_replace('|^(page:\d+).*$|', '$1', $resource);
 
-    throw new dmException('Can not find href for '. $this->resource);
-  }
+                if ($page = dmDb::table('DmPage')->findOneBySource($pageResource)) {
+                    $resource = preg_replace('|^page:\d+(.*)$|', 'app:front|' . $page->get('subdomain') . '/' . $page->get('slug') . '$1', $resource);
+                } else {
+                    throw new dmException(sprintf('%s is not a valid link resource', $resource));
+                }
+            } elseif (strncmp($resource, 'media:', 6) === 0) {
+                $mediaResource = preg_replace('|^media:(\d+).*|', '$1', $resource);
+
+                if ($media = dmDb::table('DmMedia')->findOneByIdWithFolder($mediaResource)) {
+                    $resource = '/' . $media->getWebPath();
+                    /*
+                     * add relativeUrlRoot to absolute resource
+                     */
+                    if ($relativeUrlRoot = dmArray::get($this->serviceContainer->getParameter('request.context'), 'relative_url_root')) {
+                        $resource = $relativeUrlRoot . $resource;
+                    }
+                } else {
+                    throw new dmException(sprintf('%s is not a valid media resource. The media with id %s does not exist', $resource, $mediaResource));
+                }
+            }
+
+            if (strncmp($resource, 'app:', 4) === 0) {
+                $type = 'uri';
+                $app = substr($resource, 4);
+                /*
+                 * A slug may be added to the app name, extract it
+                 */
+                if ($pipePos = strpos($app, '|')) {
+                    if ($slashPos = strpos($app, '/')) {
+                        $subdomain = substr($app, $pipePos+1,$slashPos-$pipePos-1);
+                        $slug = substr($app, $slashPos);
+                    } else {
+                        $subdomain = substr($app, $pipePos);
+                        $slug = '';
+                    }
+                    $app = substr($app, 0, $pipePos);
+                } elseif ($slashPos = strpos($app, '/')) {
+                    $slug = substr($app, $slashPos);
+                    $app = substr($app, 0, $slashPos);
+                    $subdomain = 'DEFAULT';
+                } else {
+                    $slug = '';
+                    $subdomain = 'DEFAULT';
+                }
+
+                $resource = $this->serviceContainer->getService('script_name_resolver')->get($app,null,null,$subdomain) . $slug;
+            } elseif ($resource{0} === '/') {
+                $resource = $resource;
+
+                /*
+                 * add relativeUrlRoot to absolute resource
+                 */
+                if (($relativeUrlRoot = dmArray::get($this->serviceContainer->getParameter('request.context'), 'relative_url_root')) && (strpos($resource, $relativeUrlRoot) !== 0)) {
+                    $resource = $relativeUrlRoot . $resource;
+                }
+            } elseif (strncmp($resource, '+/', 2) === 0) {
+                $resource = substr($resource, 2);
+            }
+        } elseif (is_array($this->resource)) {
+            if (isset($this->resource[1]) && is_object($this->resource[1])) {
+                $resource = array(
+                    'sf_route' => $this->resource[0],
+                    'sf_subject' => $this->resource[1]
+                );
+            } else {
+                $resource = $this->resource;
+            }
+        } elseif (is_object($this->resource) && $this->resource instanceof dmDoctrineRecord) {
+            if ($this->resource instanceof DmPage) {
+                $resource = $this->serviceContainer->getService('script_name_resolver')->get('front') . '/' . $this->resource->get('slug');
+            } elseif (($module = $this->resource->getDmModule()) && $module->hasAdmin()) {
+                $resource = array(
+                    'sf_route' => $module->getUnderscore(),
+                    'action' => 'edit',
+                    'pk' => $this->resource->getPrimaryKey()
+                );
+            }
+        }
+
+        if (isset($resource)) {
+            if (is_string($resource) && (strncmp($resource, '#', 1) === 0 || strncmp($resource, 'mailto:', 7) === 0)) {
+                return $resource;
+            } else {
+                return $this->serviceContainer->getService('controller')->genUrl($resource);
+            }
+        }
+
+        throw new dmException('Can not find href for ' . $this->resource);
+    }
 
   protected function renderText()
   {

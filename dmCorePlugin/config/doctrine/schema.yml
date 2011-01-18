@@ -4,7 +4,7 @@ DmPage:
   actAs:
     NestedSet:
     I18n:
-      fields:               [slug, name, title, h1, description, keywords, auto_mod, is_active, is_secure, is_indexable]
+      fields:               [slug, subdomain, name, title, h1, description, keywords, auto_mod, is_active, is_secure, is_indexable]
       length:               7
   columns:
     module:                 { type: string(127), notnull: true }
@@ -21,6 +21,7 @@ DmPage:
     is_secure:              { type: boolean, notnull: true, default: false } # requires authentication
     credentials:            { type: string(255), notnull: false }
     is_indexable:           { type: boolean, notnull: true, default: true }
+    subdomain:              { type: string(255), notnull: true, default: "DEFAULT" }
   indexes:
     recordModuleAction:
       fields:               [ module, action, record_id ]
@@ -81,7 +82,7 @@ DmZone:
       foreign:              id
       foreignAlias:         Zones
       onDelete:             CASCADE
-  
+
 DmWidget:
   actAs:
     Sortable:               {}
@@ -187,7 +188,7 @@ DmAutoSeo:
   actAs:
     Timestampable:
     I18n:
-      fields:               [ slug, name, title, h1, description, keywords, strip_words ]
+      fields:               [ slug, subdomain, name, title, h1, description, keywords, strip_words ]
       length:               7
   columns:
     module:                 { type: string(127), notnull: true }
@@ -198,6 +199,7 @@ DmAutoSeo:
     h1:                     { type: string(255), notnull: false }
     description:            { type: string(255), notnull: false }
     keywords:               { type: string(255), notnull: false }
+    subdomain:              { type: string(255), notnull: true }
     strip_words:            { type: string(10000) }
   indexes:
     dmAutoSeoModuleAction:
@@ -234,7 +236,7 @@ DmCatalogue:
     name:                   { type: string(255), notnull: true }
     source_lang:            { type: string(15), notnull: true }
     target_lang:            { type: string(15), notnull: true }
-    
+
 DmTransUnit:
   actAs:                    [ Timestampable ]
   columns:

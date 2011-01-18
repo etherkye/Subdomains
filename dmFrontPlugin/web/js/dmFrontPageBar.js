@@ -11,7 +11,9 @@
     loaded: function()
     {
       this.element.find('a').each(function() {
-        $(this).attr('href', $.dm.ctrl.options.script_name+$(this).attr('href'));
+        if(!($(this).attr('href')[0] === '/' &&  $.dm.ctrl.options.script_name === '/') && ($(this).attr('href').substring(0,4) !== "http")){
+            $(this).attr('href', $.dm.ctrl.options.script_name+$(this).attr('href'));
+        }
         
         // We need to remove the href because IE can't enable dragging with it
         if($.browser.msie)

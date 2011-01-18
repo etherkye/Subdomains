@@ -19,6 +19,11 @@ class DmPageFrontNewForm extends DmPageForm
     ));
     $this->validatorSchema['slug'] = new sfValidatorString(array('max_length' => 255));
 
+    $this->widgetSchema['subdomain'] = new sfWidgetFormInputText(array(), array(
+      'autocomplete' => 'off'
+    ));
+    $this->validatorSchema['subdomain'] = new sfValidatorString(array('max_length' => 255));
+
     $this->widgetSchema['dm_layout_id'] = new sfWidgetFormDoctrineChoice(array(
       'model' => 'DmLayout',
       'add_empty' => false
@@ -103,7 +108,7 @@ class DmPageFrontNewForm extends DmPageForm
       $values['slug'] = dmString::urlize($values['slug'], true);
       
       $existingPageName = dmDb::query('DmPageTranslation t')
-      ->where('t.lang = ? AND t.slug = ?', array($this->object->lang, $values['slug']))
+      ->where('t.lang = ? AND t.slug = ? AND t.subdomain = ? ', array($this->object->lang, $values['slug'], $values['subdomain']))
       ->select('t.name')
       ->fetchValue();
       
@@ -117,5 +122,4 @@ class DmPageFrontNewForm extends DmPageForm
 
     return $values;
   }
-
 }

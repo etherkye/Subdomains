@@ -43,7 +43,7 @@ abstract class dmPageTreeView extends dmConfigurable
   {
     return dmDb::table('DmPage')->createQuery('page')
     ->withI18n($this->culture, null, 'page')
-    ->select('page.id, page.action, pageTranslation.name');
+    ->select('page.id, page.action, pageTranslation.name, pageTranslation.subdomain');
   }
 
   public function render($options = array())

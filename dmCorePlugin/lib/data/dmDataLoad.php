@@ -50,7 +50,7 @@ class dmDataLoad
     {
       throw new dmException('Please set an application configuration with ->setConfiguration()');
     }
-    
+
     $this->log('load basic data');
 
     $this->dispatcher->notify(new sfEvent($this, 'dm.data.before'));
@@ -105,9 +105,9 @@ class dmDataLoad
     }
   }
 
-  protected function loadSettings()
+  protected function loadSettings(array $settings = array())
   {
-    $array = array(
+    $array = array_merge(array(
       'site_name' => array(
         'default_value' => dmString::humanize(dmProject::getKey()),
         'description' => 'The site name',
@@ -129,6 +129,18 @@ class dmDataLoad
         'type' => 'boolean',
         'default_value' => 1,
         'description' => 'Is this site the current working copy ?',
+        'group_name' =>'site'
+      ),
+      'site_subdomain_default' => array(
+        'type' => 'text',
+        'default_value' => '',
+        'description' => 'Default subdomain of site. (Normaly either blank or WWW)',
+        'group_name' =>'site'
+      ),
+      'site_url' => array(
+        'type' => 'text',
+        'default_value' => '',
+        'description' => 'The sites URL (Easy to change links between DEV and PROD. Used to generate subdomains.)',
         'group_name' =>'site'
       ),
       'ga_key' => array(
@@ -219,7 +231,7 @@ class dmDataLoad
         'group_name' => 'seo',
         'credentials' => 'url_redirection'
       )
-    );
+    ),$settings);
 
     $existingSettings = dmDb::query('DmSetting s INDEXBY s.name')
     ->withI18n()
@@ -248,13 +260,13 @@ class dmDataLoad
         ->where('s.id = ?', $existingSettings[$name]->id)
         ->limit(1)
         ->fetchArray();
-        
+
         if($existing = dmArray::first($existing))
         {
           $config = $existing;
           unset($config['id'], $config['lang']);
         }
-        
+
         $existingSettings[$name]->fromArray($config)->getCurrentTranslation()->save();
       }
     }
@@ -470,7 +482,6 @@ class dmDataLoad
       "page_bar_admin" => "See page bar in admin",
       "media_bar_admin" => "See media bar in admin",
       "media_library" => "Use media library in admin",
-      "media_ignore_whitelist" => "Upload media with any filetype",
       "tool_bar_admin" => "See toolbar in admin",
       "page_bar_front" => "See page bar in front",
       "media_bar_front" => "See media bar in front",
