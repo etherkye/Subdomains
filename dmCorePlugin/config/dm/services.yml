@@ -1,5 +1,6 @@
 parameters:
-
+  domain.class:            dmDomain           #Generates the domain and works out the current subdomain
+  
   text_diff.class:            dmTextDiff            # Responsible for generating text diffs
 
   record_text_diff.class:     dmRecordTextDiff      # Responsible for rendering diffs between two versions of a record
@@ -210,6 +211,11 @@ parameters:
   record_permission_association_manager.class:      dmRecordPermissionAssociationManager
   
 services:
+
+  domain:
+    class:                    %domain.class%
+    shared:                   true
+    arguments:                [ ]
 
   text_diff:
     class:                    %text_diff.class%

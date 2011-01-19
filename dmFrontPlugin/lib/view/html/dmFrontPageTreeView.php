@@ -2,25 +2,24 @@
 
 class dmFrontPageTreeView extends dmPageTreeView
 {
+  protected
+  $serviceContainer;
+
+  public function __construct(dmHelper $helper, dmFrontBaseServiceContainer $serviceContainer, $culture, array $options)
+  {
+    $this->serviceContainer   = $serviceContainer;
+    parent::__construct($helper,$culture,$options);
+  }
 
   protected function renderPageLink(array $page)
   {
+      
     $pageSlug = $page[7];
     $pageSubdomain = $page[6];
 
-    if($pageSubdomain == "DEFAULT"){
-        $pageSubdomain = dmConfig::get('site_subdomain_default');
-    }
+    $domain = $this->serviceContainer->getService('domain');
 
-    $subdomain = substr(str_replace(dmConfig::get('site_url'),'',$_SERVER['SERVER_NAME']),0,-1);
-
-    if($pageSubdomain == $subdomain){
-        $baseHref = $pageSlug;
-    }else{
-        $baseHref = "http://" .(!empty($pageSubdomain)?$pageSubdomain.".":""). dmConfig::get('site_url') . $this->getHrefPrefix().($pageSlug ? '/'.$pageSlug : '');
-    }
-
-    return '<a href="'.$baseHref.'" data-page-id="'.$page[0].'"><ins></ins>'.$page[5].'</a>';
+    return '<a href="'.$domain->returnLink($this->getHrefPrefix(), $pageSlug, $pageSubdomain).'" data-page-id="'.$page[0].'"><ins></ins>'.$page[5].'</a>';
   }
 
   public function getHrefPrefix()

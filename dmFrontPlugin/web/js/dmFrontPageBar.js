@@ -11,10 +11,12 @@
     loaded: function()
     {
       this.element.find('a').each(function() {
-        if(!($(this).attr('href')[0] === '/' &&  $.dm.ctrl.options.script_name === '/') && ($(this).attr('href').substring(0,4) !== "http")){
+        if(!($(this).attr('href')[0] === '/' &&  $.dm.ctrl.options.script_name === '/') 
+            && ($(this).attr('href').substring(0,4) !== "http")
+            && ($(this).attr('href').substring(0,$.dm.ctrl.options.script_name.length-1) !==  $.dm.ctrl.options.script_name.substring(0,$.dm.ctrl.options.script_name.length-1) )){
             $(this).attr('href', $.dm.ctrl.options.script_name+$(this).attr('href'));
         }
-        
+
         // We need to remove the href because IE can't enable dragging with it
         if($.browser.msie)
         {

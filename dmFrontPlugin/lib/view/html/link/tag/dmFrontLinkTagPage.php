@@ -59,24 +59,9 @@ class dmFrontLinkTagPage extends dmFrontLinkTag
     $pageSlug = $this->page->_getI18n('slug');
     $pageSubdomain = $this->page->_getI18n('subdomain');
 
-    if($pageSubdomain == "DEFAULT"){
-        $pageSubdomain = dmConfig::get('site_subdomain_default');
-    }
+    $domain = $this->resource->getSubject()->getServiceContainer()->getService('domain');
 
-    $subdomain = substr(str_replace(dmConfig::get('site_url'),'',$_SERVER['SERVER_NAME']),0,-1);
-
-    if($pageSubdomain == $subdomain){
-        $baseHref = $this->getHrefPrefix().($pageSlug ? '/'.$pageSlug : '');
-    }else{
-        $baseHref = "http://" .(!empty($pageSubdomain)?$pageSubdomain.".":""). dmConfig::get('site_url') . $this->getHrefPrefix().($pageSlug ? '/'.$pageSlug : '');
-    }
-
-    if(empty($baseHref))
-    {
-      $baseHref = '/';
-    }
-
-    return $baseHref;
+    return $domain->returnLink($this->getHrefPrefix(), $pageSlug, $pageSubdomain);
   }
 
   protected function renderText()

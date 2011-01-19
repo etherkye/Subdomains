@@ -20,18 +20,15 @@ class dmPageRouting extends dmConfigurable
   /*
    * @return $pageRoute instance of dmPageRoute, or false
    */
-public function find($slug, $culture = null)
+  public function find($slug, $culture = null)
   {
+    $domain = $this->serviceContainer->getService('domain');
+
     $culture = null === $culture ? $this->serviceContainer->getParameter('user.culture') : $culture;
 
-    $subdomain = substr(str_replace(dmConfig::get('site_url'),'',$_SERVER['SERVER_NAME']),0,-1);
-    if($subdomain == dmConfig::get('site_subdomain_default')){
-        $subdomain = "DEFAULT";
-    }
-
-    if(!$page = $this->findPageForCulture($slug, $culture,$subdomain))
+    if(!$page = $this->findPageForCulture($slug, $culture,$domain->getSubdomain()))
     {
-      $result = $this->findPageAndCultureForAnotherCulture($slug,$subdomain);
+      $result = $this->findPageAndCultureForAnotherCulture($slug,$domain->getSubdomain());
 
       if (!$result)
       {
