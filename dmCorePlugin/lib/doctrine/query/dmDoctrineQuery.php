@@ -31,7 +31,8 @@ abstract class dmDoctrineQuery extends Doctrine_Query
 	 * return @myDoctrineQuery $this
 	 */
 	public function withI18n($culture = null, $model = null, $rootAlias = null, $joinSide = 'left')
-	{
+	{//$query->withI18n($this->getUser()->getCulture(), null, $rootAlias);
+
 		if (null === $model)
 		{
 			$_rootAlias = $this->getRootAlias();
@@ -53,6 +54,7 @@ abstract class dmDoctrineQuery extends Doctrine_Query
 
 		if (null === $rootAlias)
 		{
+//try{
 			// refresh query for introspection
 			if(empty($this->_execParams))
 			{
@@ -69,6 +71,12 @@ abstract class dmDoctrineQuery extends Doctrine_Query
 			{
 				return $this;
 			}
+//} catch (Exception $e) {
+////    var_dump($this->_execParams);
+////    var_dump($this->_params);
+//    //throw new Doctrine_Query_Exception($e);
+//    return $this;
+//}
 		}
 		else
 		{
@@ -107,7 +115,7 @@ abstract class dmDoctrineQuery extends Doctrine_Query
 			if($table->isI18nColumn('is_active'))
 			{
 				// will join i18n if missing
-				$this->withI18n();
+                                $this->withI18n();
 
 				$translationAlias = $this->getRootAlias().'Translation';
 

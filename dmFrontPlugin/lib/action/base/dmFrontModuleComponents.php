@@ -58,12 +58,12 @@ class dmFrontModuleComponents extends myFrontBaseComponents
     {
       $query->withI18n($this->getUser()->getCulture(), null, $rootAlias);
     }
-    
+
     /*
      * Restrict to active records
      */
     $query->whereIsActive(true, $this->getDmModule()->getModel());
-    
+
     /**
      * Apply order
      */

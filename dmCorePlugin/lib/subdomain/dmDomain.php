@@ -76,10 +76,13 @@ class dmDomain extends dmConfigurable {
         return $subdomain == $this->subdomain;
     }
     private function checkPrefix($prefix){
-        if(substr($prefix,0,1) == '/'){
-            return $prefix;
+        if(substr($prefix,0,1) != '/'){
+            $prefix = '/'.$prefix;
         }
-        return '/'.$prefix;
+        if(substr($prefix,strlen($prefix)-1,1) != '/'){
+            $prefix = $prefix.'/';
+        }
+        return $prefix;
     }
 
     public function getDomain(){
@@ -105,9 +108,9 @@ class dmDomain extends dmConfigurable {
 
     public function returnLink($prefix, $slug, $subdomain){
         if($this->isSameSubdomain($subdomain)){
-            $baseHref = $this->checkPrefix($prefix).($slug ? '/'.$slug : '');
+            $baseHref = $this->checkPrefix($prefix).$slug;
         }else{
-            $baseHref = "http://" . $this->printSubdomain($subdomain) . $this->printDomain() . $this->checkPrefix($prefix).($slug ? '/'.$slug : '');
+            $baseHref = "http://" . $this->printSubdomain($subdomain) . $this->printDomain() . $this->checkPrefix($prefix).$slug;
         }
 
         if(empty($baseHref))
