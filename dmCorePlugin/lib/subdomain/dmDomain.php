@@ -92,12 +92,16 @@ class dmDomain extends dmConfigurable {
         return $this->domain;
     }
 
-    public function countSubdomains(){
-        return dmDb::table('DmPage')->countSubdomains();
+    public function countSubdomains($culture = null){
+        return dmDb::table('DmPage')->countSubdomains($culture);
     }
-    public function hasSubdomains(){
-        return dmDb::table('DmPage')->countSubdomains() -1;
+    public function hasSubdomains($culture = null){
+        return ($this->countSubdomains() > 1);
     }
+    public function getSubdomains($culture = null){
+        return dmDb::table('DmPage')->getSubdomains($culture);
+    }
+
     public function getSubdomain(){
         if ($this->subdomain == dmConfig::get('site_subdomain_default')) {
             return "DEFAULT";
@@ -113,8 +117,8 @@ class dmDomain extends dmConfigurable {
         return (!empty($subdomain)?$subdomain.".":"");
     }
 
-    public function returnLink($prefix, $slug, $subdomain){
-        if($this->isSameSubdomain($subdomain)){
+    public function returnLink($prefix, $slug, $subdomain,$full = false){
+        if($this->isSameSubdomain($subdomain) && !$full){
             $baseHref = $this->checkPrefix($prefix).$slug;
         }else{
             $baseHref = "http://" . $this->printSubdomain($subdomain) . $this->printDomain() . $this->checkPrefix($prefix).$slug;

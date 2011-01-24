@@ -46,7 +46,7 @@ class dmScriptNameResolver
     return $appUrl;
   }
   
-  protected function guessBootScriptFromWebDir($app, $env)
+  public function guessBootScriptFromWebDir($app, $env)
   {
     $script = false;
     $webDir = sfConfig::get('sf_web_dir');

@@ -165,7 +165,7 @@ services:
   xml_sitemap_generator:
     class:                    %xml_sitemap_generator.class%
     shared:                   false
-    arguments:                [ @dispatcher, @filesystem, @i18n, %xml_sitemap_generator.options% ]
+    arguments:                [ @dispatcher, @filesystem, @i18n, @service_container, %xml_sitemap_generator.options% ]
 
   diem_version_check:
     class:                    %diem_version_check.class%
