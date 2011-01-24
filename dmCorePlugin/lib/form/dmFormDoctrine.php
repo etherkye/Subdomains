@@ -107,7 +107,15 @@ abstract class dmFormDoctrine extends sfFormDoctrine
 			);
 			if ($fieldName == 'nested_set_parent_id')
 			{
-				$options['add_empty'] = '~';
+			  
+			  if($this->getObject()->getTable()->getTemplate('NestedSet')->getOption('hasManyRoots') 
+			   	|| $this->getObject()->getNode()->isRoot()
+			  )
+			  {
+				  $options['add_empty'] = '~';
+			  }else{
+			    $this->setDefault('nested_set_parent_id', $this->getObject()->getNode()->getRootValue());
+			  }
 				$this->validatorSchema[$fieldName]->setOptions(array_merge(
 				$this->validatorSchema[$fieldName]->getOptions(),
 				array(
@@ -118,6 +126,11 @@ abstract class dmFormDoctrine extends sfFormDoctrine
 			$this->widgetSchema[$fieldName]->getOptions(),
 			$options
 			));
+			
+			if(!$this->isNew() && !$this->getObject()->getNode()->isRoot())
+			{
+			  $this->setDefault($fieldName, $this->getObject()->getNode()->getParent()->get('id'));
+			}
 		}
 		return $this;
 	}

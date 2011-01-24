@@ -24,9 +24,7 @@ class dmXmlSitemapGenerator extends dmConfigurable
   protected function initialize(array $options) {
         $this->domain = $this->serviceContainer->getService('domain');
         $this->notIn = sfConfig::has('app_sitemap_not_in')?sfConfig::get('app_sitemap_not_in'):array();
-        $this->prefix = sfConfig::get('sf_no_script_name')
-                        ? ""
-                        : $this->serviceContainer->getService('script_name_resolver')->guessBootScriptFromWebDir('front','prod');
+        $this->prefix =  $this->serviceContainer->getService('script_name_resolver')->guessBootScriptFromWebDir('front','prod');
         $this->configure($options);
     }
   /*
