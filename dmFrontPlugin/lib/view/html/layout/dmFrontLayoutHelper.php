@@ -112,12 +112,13 @@ class dmFrontLayoutHelper extends dmCoreLayoutHelper
   
   protected function getGoogleAnalyticsCode($gaKey)
   {
-      $domain = $this->getService('domain')->getDomain();
-    return "<script type=\"text/javascript\">
+      $domain = $this->getService('domain');
+      $html =
+     "<script type=\"text/javascript\">
 var _gaq = _gaq || [];
-_gaq.push(['_setAccount', '".$gaKey."']);
-_gaq.push(['_setDomainName','.".$domain."']);
-_gaq.push(['_trackPageview']);
+_gaq.push(['_setAccount', '".$gaKey."']);".
+($domain->hasSubdomains()?"_gaq.push(['_setDomainName','.".$domain->getDomain()."']);":"").
+  "_gaq.push(['_trackPageview']);
 
 (function() {
   var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -125,5 +126,6 @@ _gaq.push(['_trackPageview']);
   (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
 })();
 </script>";
+      return $html;
   }
 }

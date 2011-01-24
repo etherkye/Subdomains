@@ -91,6 +91,13 @@ class dmDomain extends dmConfigurable {
     public function printDomain(){
         return $this->domain;
     }
+
+    public function countSubdomains(){
+        return dmDb::table('DmPage')->countSubdomains();
+    }
+    public function hasSubdomains(){
+        return dmDb::table('DmPage')->countSubdomains() -1;
+    }
     public function getSubdomain(){
         if ($this->subdomain == dmConfig::get('site_subdomain_default')) {
             return "DEFAULT";

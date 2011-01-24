@@ -402,4 +402,12 @@ class PluginDmPageTable extends myDoctrineTable
     ->fetchOne();
   }
 
+    public function countSubdomains()
+  {
+     return $this->createQuery('p')
+    ->withI18n($culture, null, 'p', 'inner')
+    ->groupBy('pTranslation.subdomain')
+    ->count();
+  }
+
 }
