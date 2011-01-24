@@ -25,13 +25,13 @@ class dmPageRouting extends dmConfigurable
     $domain = $this->serviceContainer->getService('domain');
 
     $culture = null === $culture ? $this->serviceContainer->getParameter('user.culture') : $culture;
-
+      //throw new dmException(sprintf('Slug: %s, Culture: %s, Subdomain %s', $slug,$culture,$domain->getSubdomain()));
     if(!$page = $this->findPageForCulture($slug, $culture,$domain->getSubdomain()))
     {
       $result = $this->findPageAndCultureForAnotherCulture($slug,$domain->getSubdomain());
 
       if (!$result)
-      {
+      { 
         return false;
       }
 

@@ -311,7 +311,7 @@ class PluginDmPageTable extends myDoctrineTable
     ->where('pTranslation.slug = ?', $slug);
      if(!is_null($subdomain)){
         $page->andWhere('pTranslation.subdomain = ?', $subdomain);
-     }
+     }     
     return $page->fetchOne();
   }
 

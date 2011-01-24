@@ -112,9 +112,11 @@ class dmFrontLayoutHelper extends dmCoreLayoutHelper
   
   protected function getGoogleAnalyticsCode($gaKey)
   {
+      $domain = $this->getService('domain')->getDomain();
     return "<script type=\"text/javascript\">
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '".$gaKey."']);
+_gaq.push(['_setDomainName','.".$domain."']);
 _gaq.push(['_trackPageview']);
 
 (function() {

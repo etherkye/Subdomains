@@ -52,7 +52,7 @@ class dmWebResponse extends sfWebResponse
    */
   public function listenToRememberMeEvent(sfEvent $event)
   {
-    $this->setCookie($this->getRememberCookieName(), $event['remember_key'], time() + $event['expiration_age'],'/','.'.sfContext::getInstance()->getServiceContainer()->getService('subdomain')->domain);
+    $this->setCookie($this->getRememberCookieName(), $event['remember_key'], time() + $event['expiration_age'],'/','.'.sfContext::getInstance()->getServiceContainer()->getService('domain')->getDomain());
   }
   
   /**

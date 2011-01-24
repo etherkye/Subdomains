@@ -21,7 +21,7 @@ DmPage:
     is_secure:              { type: boolean, notnull: true, default: false } # requires authentication
     credentials:            { type: string(255), notnull: false }
     is_indexable:           { type: boolean, notnull: true, default: true }
-    subdomain:              { type: string(255), notnull: true, default: "DEFAULT" }
+    subdomain:              { type: string(255), notnull: false, default: "DEFAULT" }
   indexes:
     recordModuleAction:
       fields:               [ module, action, record_id ]
@@ -199,7 +199,7 @@ DmAutoSeo:
     h1:                     { type: string(255), notnull: false }
     description:            { type: string(255), notnull: false }
     keywords:               { type: string(255), notnull: false }
-    subdomain:              { type: string(255), notnull: true }
+    subdomain:              { type: string(255), notnull: false, default: "DEFAULT" }
     strip_words:            { type: string(10000) }
   indexes:
     dmAutoSeoModuleAction:
