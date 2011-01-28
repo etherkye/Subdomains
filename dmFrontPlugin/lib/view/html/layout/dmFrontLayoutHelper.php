@@ -117,7 +117,10 @@ class dmFrontLayoutHelper extends dmCoreLayoutHelper
      "<script type=\"text/javascript\">
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', '".$gaKey."']);".
-($domain->hasSubdomains()?"_gaq.push(['_setDomainName','.".$domain->getDomain()."']);":"").
+($domain->hasSubdomains()?"
+   _gaq.push(['_setDomainName','.".$domain->getDomain()."']);
+   _gaq.push(['_setAllowHash',false]);
+  ":"").
   "_gaq.push(['_trackPageview']);
 
 (function() {
