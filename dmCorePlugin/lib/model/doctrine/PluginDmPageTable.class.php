@@ -194,7 +194,7 @@ class PluginDmPageTable extends myDoctrineTable
       if(!is_null($subdomain)){
           $parentSlug->andWhere('pt.subdomain = ?', $subdomain);
       }
-      $parentSlug->andWhere('pt.lang = ?', dmDoctrineRecord::getDefaultCulture())
+      $parentSlug = $parentSlug->andWhere('pt.lang = ?', dmDoctrineRecord::getDefaultCulture())
       ->select('pt.slug')
       ->fetchValue();
     }

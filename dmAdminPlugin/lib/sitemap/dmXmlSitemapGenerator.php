@@ -77,6 +77,9 @@ class dmXmlSitemapGenerator extends dmConfigurable
         if ($this->i18n->hasManyCultures()) {
             foreach ($this->i18n->getCultures() as $culture) {
                 $subdomains = $this->domain->getSubdomains($culture);
+                $files[] = $this->getOption('dir') . '/sitemap_'
+                        . $culture
+                        . '.xml';
                 foreach ($subdomains as $subdomain) {
                     $files[] = $this->getOption('dir') . '/sitemap_'
                             . $culture . '_'
