@@ -198,7 +198,7 @@ $expected = array(
   'module' => 'dmWidgetNavigation',
   'position' => $widget->position,
   'value' => json_encode(array(
-    'ulClass' => 'my_ul_class',  'menuName' => 'my_menu_name',  'liClass' => 'my_li_class', 'items' => array(
+     'menuName' => 'my_menu_name', 'ulClass' => 'my_ul_class',  'liClass' => 'my_li_class', 'items' => array(
       array('link' => 'page:1', 'text' => 'Home', 'secure' => 0, 'nofollow' => 0, 'depth' => 0),
       array('link' => 'page:'.$page1->id, 'text' => 'Page 1', 'secure' => 0, 'nofollow' => 0, 'depth' => 0),
       array('link' => '', 'text' => 'nolink', 'secure' => 0, 'nofollow' => 0, 'depth' => 0),
@@ -285,7 +285,7 @@ $expected = array(
   'module' => 'dmWidgetNavigation',
   'position' => $widget->position,
   'value' => json_encode(array(
-    'ulClass' => 'my_ul_class',  'menuName' => 'my_menu_name',  'liClass' => 'my_li_class', 'items' => array(
+    'menuName' => 'my_menu_name', 'ulClass' => 'my_ul_class',  'liClass' => 'my_li_class', 'items' => array(
       array('link' => 'page:1', 'text' => 'Home', 'secure' => 0, 'nofollow' => 0, 'depth' => 0),
       array('link' => 'page:'.$page1->id, 'text' => 'Page 1', 'secure' => 0, 'nofollow' => 0, 'depth' => 1)
     )

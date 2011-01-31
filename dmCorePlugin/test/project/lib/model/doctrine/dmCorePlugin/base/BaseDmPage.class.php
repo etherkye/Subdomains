@@ -19,6 +19,7 @@
  * @property boolean $is_secure
  * @property string $credentials
  * @property boolean $is_indexable
+ * @property string $subdomain
  * 
  * @method string  getModule()       Returns the current record's "module" value
  * @method string  getAction()       Returns the current record's "action" value
@@ -34,6 +35,7 @@
  * @method boolean getIsSecure()     Returns the current record's "is_secure" value
  * @method string  getCredentials()  Returns the current record's "credentials" value
  * @method boolean getIsIndexable()  Returns the current record's "is_indexable" value
+ * @method string  getSubdomain()    Returns the current record's "subdomain" value
  * @method DmPage  setModule()       Sets the current record's "module" value
  * @method DmPage  setAction()       Sets the current record's "action" value
  * @method DmPage  setRecordId()     Sets the current record's "record_id" value
@@ -48,6 +50,7 @@
  * @method DmPage  setIsSecure()     Sets the current record's "is_secure" value
  * @method DmPage  setCredentials()  Sets the current record's "credentials" value
  * @method DmPage  setIsIndexable()  Sets the current record's "is_indexable" value
+ * @method DmPage  setSubdomain()    Sets the current record's "subdomain" value
  * 
  * @package    retest
  * @subpackage model
@@ -131,6 +134,12 @@ abstract class BaseDmPage extends myDoctrineRecord
              'notnull' => true,
              'default' => true,
              ));
+        $this->hasColumn('subdomain', 'string', 255, array(
+             'type' => 'string',
+             'notnull' => false,
+             'default' => 'DEFAULT',
+             'length' => 255,
+             ));
 
 
         $this->index('recordModuleAction', array(
@@ -152,16 +161,18 @@ abstract class BaseDmPage extends myDoctrineRecord
              'fields' => 
              array(
               0 => 'slug',
-              1 => 'name',
-              2 => 'title',
-              3 => 'h1',
-              4 => 'description',
-              5 => 'keywords',
-              6 => 'auto_mod',
-              7 => 'is_active',
-              8 => 'is_secure',
-              9 => 'is_indexable',
+              1 => 'subdomain',
+              2 => 'name',
+              3 => 'title',
+              4 => 'h1',
+              5 => 'description',
+              6 => 'keywords',
+              7 => 'auto_mod',
+              8 => 'is_active',
+              9 => 'is_secure',
+              10 => 'is_indexable',
              ),
+             'length' => 7,
              ));
         $this->actAs($nestedset0);
         $this->actAs($i18n0);

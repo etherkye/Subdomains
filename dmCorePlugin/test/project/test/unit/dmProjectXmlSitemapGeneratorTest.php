@@ -7,6 +7,7 @@ $helper->boot('admin');
 $t = new lime_test();
 
 $domain = 'http://www.my-domain.com';
+$_SERVER['SERVER_NAME'] = $domain;
 $sitemap = $helper->get('xml_sitemap_generator')->setOption('domain', $domain);
 $cultures = $helper->get('i18n')->getCultures();
 

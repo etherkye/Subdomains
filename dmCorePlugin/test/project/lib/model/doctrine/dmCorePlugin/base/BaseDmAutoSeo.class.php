@@ -13,6 +13,7 @@
  * @property string $h1
  * @property string $description
  * @property string $keywords
+ * @property string $subdomain
  * @property string $strip_words
  * 
  * @method string    getModule()      Returns the current record's "module" value
@@ -23,6 +24,7 @@
  * @method string    getH1()          Returns the current record's "h1" value
  * @method string    getDescription() Returns the current record's "description" value
  * @method string    getKeywords()    Returns the current record's "keywords" value
+ * @method string    getSubdomain()   Returns the current record's "subdomain" value
  * @method string    getStripWords()  Returns the current record's "strip_words" value
  * @method DmAutoSeo setModule()      Sets the current record's "module" value
  * @method DmAutoSeo setAction()      Sets the current record's "action" value
@@ -32,6 +34,7 @@
  * @method DmAutoSeo setH1()          Sets the current record's "h1" value
  * @method DmAutoSeo setDescription() Sets the current record's "description" value
  * @method DmAutoSeo setKeywords()    Sets the current record's "keywords" value
+ * @method DmAutoSeo setSubdomain()   Sets the current record's "subdomain" value
  * @method DmAutoSeo setStripWords()  Sets the current record's "strip_words" value
  * 
  * @package    retest
@@ -84,6 +87,12 @@ abstract class BaseDmAutoSeo extends myDoctrineRecord
              'notnull' => false,
              'length' => 255,
              ));
+        $this->hasColumn('subdomain', 'string', 255, array(
+             'type' => 'string',
+             'notnull' => false,
+             'default' => 'DEFAULT',
+             'length' => 255,
+             ));
         $this->hasColumn('strip_words', 'string', 10000, array(
              'type' => 'string',
              'length' => 10000,
@@ -108,13 +117,15 @@ abstract class BaseDmAutoSeo extends myDoctrineRecord
              'fields' => 
              array(
               0 => 'slug',
-              1 => 'name',
-              2 => 'title',
-              3 => 'h1',
-              4 => 'description',
-              5 => 'keywords',
-              6 => 'strip_words',
+              1 => 'subdomain',
+              2 => 'name',
+              3 => 'title',
+              4 => 'h1',
+              5 => 'description',
+              6 => 'keywords',
+              7 => 'strip_words',
              ),
+             'length' => 7,
              ));
         $this->actAs($timestampable0);
         $this->actAs($i18n0);
