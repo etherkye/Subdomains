@@ -54,10 +54,12 @@ abstract class BaseDmPageTranslationFormFilter extends BaseFormFilterDoctrine
 			$this->setWidget('is_indexable', new sfWidgetFormChoice(array('choices' => array('' => $this->getI18n()->__('yes or no', array(), 'dm'), 1 => $this->getI18n()->__('yes', array(), 'dm'), 0 => $this->getI18n()->__('no', array(), 'dm')))));
 			$this->setValidator('is_indexable', new sfValidatorBoolean());
 		}
+
 		if($this->needsWidget('subdomain')){
 			$this->setWidget('subdomain', new sfWidgetFormDmFilterInput());
 			$this->setValidator('subdomain', new sfValidatorString(array('required' => false)));
 		}
+
 		if($this->needsWidget('lang')){
 			$this->setWidget('lang', new sfWidgetFormDmFilterInput());
 			$this->setValidator('lang', new sfValidatorDoctrineChoice(array('required' => false, 'model' => 'DmPageTranslation', 'column' => 'lang')));
