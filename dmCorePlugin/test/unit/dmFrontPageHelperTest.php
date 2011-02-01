@@ -24,7 +24,7 @@ $widget = array(
 
 $pageHelper->setOption('widget_css_class_pattern', '');
 
-$expected = array('dm_widget', 'dm_widget_inner custom_class');
+$expected = array('dm_widget custom_class', 'dm_widget_inner');
 $t->is($pageHelper->getWidgetContainerClasses($widget), $expected,'widgetContainerClasses for breadCrumb : '.implode(', ', $expected));
 
 $widget['action'] = 'title';

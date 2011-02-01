@@ -29,6 +29,7 @@ $pageName = $pageSlug = dmString::random();
 $form->bind(array(
   'name' => $pageName,
   'slug' => $pageSlug,
+  'subdomain' => 'DEFAULT',
   'dm_layout_id' => $layout->id,
   'parent_id' => $parentPage->id
 ));

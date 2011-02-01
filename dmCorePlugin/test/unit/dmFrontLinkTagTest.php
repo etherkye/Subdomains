@@ -34,7 +34,7 @@ $testPage = dmDb::create('DmPage', array(
 
 $testPage->Node->insertAsLastChildOf($home);
 
-$scriptName = $helper->get('request')->getScriptName();
+$scriptName = '/'.$helper->get('request')->getScriptName();
 $t->diag('Current cli script name = '.$scriptName);
 
 $t->is((string)_link('http://c2.com/cgi/wiki?DontRepeatYourself')->text('DRY'), $expected = '<a class="link" href="http://c2.com/cgi/wiki?DontRepeatYourself">DRY</a>', $expected);

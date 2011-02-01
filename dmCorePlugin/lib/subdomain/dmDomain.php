@@ -48,7 +48,7 @@ class dmDomain extends dmConfigurable {
         unset($bit);
         unset($bits);
         $domainb = '';
-        if (strlen($part[1]) > 3) {
+        if (isset($part[1]) && strlen($part[1]) > 3) {
             unset($part[0]);
         }
         foreach ($part AS $bit) {
@@ -65,6 +65,9 @@ class dmDomain extends dmConfigurable {
         } else {
             $domainb = $bits[0];
         }
+        if(empty($domainb)){
+            return '';
+        }
         $bits = explode($domain, $domainb);
         return trim($bits[0], '.');
     }
@@ -79,8 +82,8 @@ class dmDomain extends dmConfigurable {
         if(substr($prefix,0,1) != '/'){
             $prefix = '/'.$prefix;
         }
-        if(substr($prefix,strlen($prefix)-1,1) != '/'){
-            $prefix = $prefix.'/';
+        if(substr($prefix,strlen($prefix)-1,1) == '/'){
+            $prefix = substr($prefix,0,-1);
         }
         return $prefix;
     }
@@ -119,9 +122,13 @@ class dmDomain extends dmConfigurable {
 
     public function returnLink($prefix, $slug, $subdomain,$full = false){
         if($this->isSameSubdomain($subdomain) && !$full){
-            $baseHref = $this->checkPrefix($prefix).$slug;
+            $baseHref = $this->checkPrefix($prefix).'/'.$slug;
         }else{
-            $baseHref = "http://" . $this->printSubdomain($subdomain) . $this->printDomain() . $this->checkPrefix($prefix).$slug;
+            $baseHref = "http://" . $this->printSubdomain($subdomain) . $this->printDomain() . $this->checkPrefix($prefix).'/'.$slug;
+        }
+        
+        if(substr($baseHref,strlen($baseHref)-1,1) == '/'){
+            $baseHref = substr($baseHref,0,-1);
         }
 
         if(empty($baseHref))

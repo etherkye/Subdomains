@@ -62,7 +62,7 @@ class dmPageRouting extends dmConfigurable
     if(!is_null($subdomain)){
         $page ->andWhere('t.subdomain = ?',$subdomain);
     }
-    $page->fetchOne();
+    $page = $page->fetchOne();
 
     if (!$page)
     {

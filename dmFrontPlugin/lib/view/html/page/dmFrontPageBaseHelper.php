@@ -369,7 +369,7 @@ abstract class dmFrontPageBaseHelper extends dmConfigurable
   {
     // class for the widget div wrapper
     $widgetWrapClass = trim('dm_widget '.$this->getWidgetCssClassFromPattern($widget));
-    if(!empty($widget['css_class'])) {
+    if(!empty($widget['css_class']) && !$this->isInnerCssClassWidget($widget)) {
       $widgetWrapClass .= ' ' . $widget['css_class'];
     }
     

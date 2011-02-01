@@ -10,7 +10,7 @@ $page1    = dmDb::table('DmPage')->findOneByModuleAndAction('main', 'page1');
 $page11   = dmDb::table('DmPage')->findOneByModuleAndAction('main', 'page11');
 $page12   = dmDb::table('DmPage')->findOneByModuleAndAction('main', 'page12');
 
-$absoluteUrlRoot = $helper->get('helper')->link('@homepage')->getHref();
+$absoluteUrlRoot = $helper->get('helper')->link('@homepage')->getHref() . '/';
 
 $menu = $helper->get('menu')->name('Test Menu');
 
