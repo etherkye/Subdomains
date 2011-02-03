@@ -92,14 +92,18 @@ abstract class dmDoctrineTable extends Doctrine_Table
 
 	/**
 	 * Will join all localKey relations
+	 * @param myDoctrineQuery $query the query to modify
+	 * @param boolean $withI18n join Translation ?
+	 * @param array $relations array of relations alias; if empty add all relations found
 	 * @return dmDoctrineTable
 	 */
-	public function joinLocals(myDoctrineQuery $query, $withI18n = false)
+	public function joinLocals(myDoctrineQuery $query, $withI18n = false, $relations = array())
 	{
 		$rootAlias = $query->getRootAlias();
 
 		foreach($this->getRelationHolder()->getLocals() as $relation)
 		{
+			if(!empty($relations) && !in_array($relation['alias'], $relations)) continue;
 			if ($relation->getClass() === 'DmMedia')
 			{
 				$query->withDmMedia($relation->getAlias());
@@ -736,5 +740,34 @@ abstract class dmDoctrineTable extends Doctrine_Table
 				return $r->getName();
 			}
 		}
+	}
+	/**
+	 * 
+	 * Get the opposite relation of given relation
+	 * @param string $relation 
+	 * @throws LogicException
+	 * @return Doctrine_Relation 
+	 */
+	public function getOppositeRelation($relation)
+	{
+		if(is_string($relation))
+		{
+			$relation = $this->getRelation($relation);
+		}
+		if(!$relation instanceof Doctrine_Relation)
+		{
+			throw new LogicException('Given $relation is not a Doctrine_Relation');
+		}
+		
+		$oppositeTableRelations = $relation['table']->getRelationParser()->getRelations();
+		
+		foreach($oppositeTableRelations as $rel)
+		{
+			if($rel['local'] === $relation['foreign'])
+			{
+				return $rel;
+			}
+		}
+		return false;
 	}
 }
