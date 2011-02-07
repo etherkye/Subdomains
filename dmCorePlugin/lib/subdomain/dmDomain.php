@@ -20,6 +20,13 @@ class dmDomain extends dmConfigurable {
         $this->configure($options);
     }
 
+    /**
+     * Removes subdomains and works out the root domain
+     * 
+     * @param string $domainb The $_SERVER['SERVER_NAME']
+     * 
+     * @return string The raw domain
+     */
     private function generateDomain($domainb) {
         $bits = explode('/', $domainb);
         if ($bits[0] == 'http:' || $bits[0] == 'https:') {
@@ -58,6 +65,14 @@ class dmDomain extends dmConfigurable {
         return preg_replace('/(.*)\./', '$1', $domainb);
     }
 
+    /**
+     *Takes the domain from $_SERVER and the calcuated raw domain and returns the current subdomain.
+     * 
+     * @param string $domainb $_SERVER['SERVER_NAME']
+     * @param string $domain generateDomain or admin set domain
+     * 
+     * @return string the current subdomain
+     */
     private function generateSubDomain($domainb, $domain) {
         $bits = explode('/', $domainb);
         if ($bits[0] == 'http:' || $bits[0] == 'https:') {
@@ -72,12 +87,27 @@ class dmDomain extends dmConfigurable {
         return trim($bits[0], '.');
     }
 
+    /**
+     * Checks the current subdomain to the requested one
+     * 
+     * @param string $subdomain The current subdomain
+     * 
+     * @return boolean
+     */
     private  function isSameSubdomain($subdomain) {
         if ($subdomain == "DEFAULT") {
             $subdomain = dmConfig::get('site_subdomain_default');
         }
         return $subdomain == $this->subdomain;
     }
+    
+    /**
+     * Adds a leading / from prefix and removes  trailing /
+     * 
+     * @param string $prefix
+     * 
+     * @return string
+     */
     private function checkPrefix($prefix){
         if(substr($prefix,0,1) != '/'){
             $prefix = '/'.$prefix;
@@ -88,28 +118,70 @@ class dmDomain extends dmConfigurable {
         return $prefix;
     }
 
-    public function getDomain(){
+    /**
+     * Returns the current domain
+     *
+     * @return string
+     */
+   public function getDomain(){
         return $this->domain;
     }
+
+    /**
+     * Returns the current domain
+     *
+     * @return string
+     */
     public function printDomain(){
         return $this->domain;
     }
 
+    /**
+     * Sets the subdomain for use of internal scripts (xmlSitemap) using 127.0.0.1
+     *
+     * @param string $domain
+     * @return dmDomain
+     */
     public function setDomain($domain){
         $this->domain = $domain;
-        return $this->domain;
+        return $this;
     }
 
+    /**
+     * Returns the number of subdomains in the database for the given culture
+     *
+     * @param string $culture
+     * @return integer
+     */
     public function countSubdomains($culture = null){
         return dmDb::table('DmPage')->countSubdomains($culture);
     }
+
+    /**
+     * True if countSubdomains > 1
+     *
+     * @param string $culture
+     * @return boolean
+     */
     public function hasSubdomains($culture = null){
         return ($this->countSubdomains() > 1);
     }
+
+    /**
+     * Returns doctrineCollection of pages, one for each culture
+     *
+     * @param string $culture
+     * @return doctrineCollection
+     */
     public function getSubdomains($culture = null){
         return dmDb::table('DmPage')->getSubdomains($culture);
     }
 
+    /**
+     * Gets the current pages subdomain
+     *
+     * @return string - DEFAULT or current subdomain
+     */
     public function getSubdomain(){
         if ($this->subdomain == dmConfig::get('site_subdomain_default')) {
             return "DEFAULT";
@@ -117,6 +189,12 @@ class dmDomain extends dmConfigurable {
         return $this->subdomain;
     }
 
+    /**
+     * Converts DEFAULT into printable subdomain and appends a '.' to the end for simplicity of printing
+     *
+     * @param string $subdomain
+     * @return string
+     */
     public function printSubdomain($subdomain){
         if ($subdomain == "DEFAULT") {
             $subdomain = dmConfig::get('site_subdomain_default');
@@ -125,6 +203,15 @@ class dmDomain extends dmConfigurable {
         return (!empty($subdomain)?$subdomain.".":"");
     }
 
+    /**
+     * Creates a full HTTP slug if the current subdomain is different from the given one, or if requested by  boolean. Else a half slug is returned.
+     *
+     * @param string $prefix - prefix (index.php)
+     * @param string $slug - The page slug
+     * @param string $subdomain - the subdomain of the page
+     * @param boolean $full - default FALSE, set to TRUE to print full domain string instead of half.
+     * @return string 
+     */
     public function returnLink($prefix, $slug, $subdomain,$full = false){
         if($this->isSameSubdomain($subdomain) && !$full){
             $baseHref = $this->checkPrefix($prefix).'/'.$slug;

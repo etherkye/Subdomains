@@ -53,7 +53,12 @@ class dmFrontLinkTagPage extends dmFrontLinkTag
   {
     return $this->currentPage && $this->currentPage->getNode()->isDescendantOf($this->page);
   }
-  
+
+  /**
+   * Creates a new domain service which generates the Href link for the page.
+   *
+   * @return string
+   */
   protected function getBaseHref()
   {
     $pageSlug = $this->page->_getI18n('slug');

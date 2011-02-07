@@ -32,6 +32,22 @@ class dmPageRouting extends dmConfigurable
 
       if (!$result)
       { 
+        return $this->findDefaultSubdomain($slug,$culture);
+      }
+
+      list($page, $culture) = $result;
+    }
+
+    return $this->createRoute($slug, $page, $culture);
+  }
+
+  private function findDefaultSubdomain($slug, $culture){
+    if(!$page = $this->findPageForCulture($slug, $culture,"DEFAULT"))
+    {
+      $result = $this->findPageAndCultureForAnotherCulture($slug,"DEFAULT");
+
+      if (!$result)
+      {
         return false;
       }
 

@@ -109,7 +109,13 @@ class dmFrontLayoutHelper extends dmCoreLayoutHelper
     
     return '';
   }
-  
+
+  /**
+   * Returns the script code to generate the google analytic async code.
+   *
+   * @param string $gaKey
+   * @return string
+   */
   protected function getGoogleAnalyticsCode($gaKey)
   {
       $domain = $this->getService('domain');

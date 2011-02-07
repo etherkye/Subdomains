@@ -11,6 +11,12 @@ class dmFrontPageTreeView extends dmPageTreeView
     parent::__construct($helper,$culture,$options);
   }
 
+   /**
+   * Creates a new domain service which generates the Href link for the page. Returns it inside an A tag.
+   *
+   * @param array $page - Array of information about the page to generate link for.
+   * @return string - A tag
+   */
   protected function renderPageLink(array $page)
   {
       
