@@ -121,7 +121,7 @@ class dmXmlSitemapGenerator extends dmConfigurable
             $sitemaps[] = sprintf('  <sitemap>
     <loc>%s</loc>
   </sitemap>',
-                            $this->getOption('domain') . '/sitemap_' . $culture . '.xml');
+                      $this->domain->returnLink("",'/sitemap_' . $culture . '.xml',"DEFAULT",true));
         }
 
         return implode("\n", $sitemaps);
@@ -142,10 +142,10 @@ class dmXmlSitemapGenerator extends dmConfigurable
             $sitemaps[] = sprintf('  <sitemap>
     <loc>%s</loc>
   </sitemap>',
-                            $this->getOption('domain') . '/sitemap_'
+          $this->domain->returnLink("",$this->getOption('domain') . '/sitemap_'
                             . $culture . '_'
                             . $subdomain->get('Translation')->get($culture)->get('subdomain')
-                            . '.xml');
+                            . '.xml',"DEFAULT",true));
         }
 
         return implode("\n", $sitemaps);
