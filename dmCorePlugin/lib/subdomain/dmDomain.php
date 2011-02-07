@@ -95,6 +95,11 @@ class dmDomain extends dmConfigurable {
         return $this->domain;
     }
 
+    public function setDomain($domain){
+        $this->domain = $domain;
+        return $this->domain;
+    }
+
     public function countSubdomains($culture = null){
         return dmDb::table('DmPage')->countSubdomains($culture);
     }
