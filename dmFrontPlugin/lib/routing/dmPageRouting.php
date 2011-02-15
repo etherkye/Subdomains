@@ -76,7 +76,7 @@ class dmPageRouting extends dmConfigurable
     ->innerJoin('p.Translation t')
     ->where('t.slug = ?', $slug);
     if(!is_null($subdomain)){
-        $page ->andWhere('t.subdomain = ?',$subdomain);
+        $page ->andWhere('t.subdomain = ? OR t.subdomain = ?',array($subdomain,dmConfig::get('site_subdomain_default')));
     }
     $page = $page->fetchOne();
 
