@@ -310,7 +310,7 @@ class PluginDmPageTable extends myDoctrineTable
     ->withI18n($culture, null, 'p', 'inner')
     ->where('pTranslation.slug = ?', $slug);
      if(!is_null($subdomain)){
-        $page->andWhere('pTranslation.subdomain = ?', $subdomain);
+        $page ->andWhere('pTranslation.subdomain = ? OR pTranslation.subdomain = ?',array($subdomain,dmConfig::get('site_subdomain_default')));
      }     
     return $page->fetchOne();
   }
