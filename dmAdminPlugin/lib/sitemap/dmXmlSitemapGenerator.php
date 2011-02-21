@@ -8,8 +8,7 @@ class dmXmlSitemapGenerator extends dmConfigurable
   $i18n,
   $serviceContainer,
   $notIn,
-  $domain,
-  $prefix;
+  $domain;
   
   public function __construct(sfEventDispatcher $dispatcher, dmFilesystem $filesystem, dmI18n $i18n, dmAdminBaseServiceContainer $serviceContainer, array $options)
   {
@@ -22,9 +21,11 @@ class dmXmlSitemapGenerator extends dmConfigurable
   }
 
   protected function initialize(array $options) {
-        $this->domain = $this->serviceContainer->getService('domain')->setDomain($this->getOption('domain'));
+        $this->domain = $this->serviceContainer->getService('domain');
+        if(strlen($this->getOption('domain')) > 2){
+            $this->domain = $this->domain->setDomain($this->getOption('domain'));
+        }
         $this->notIn = sfConfig::has('app_sitemap_not_in')?sfConfig::get('app_sitemap_not_in'):array();
-        $this->prefix =  $this->serviceContainer->getService('script_name_resolver')->guessBootScriptFromWebDir('front','prod');
         $this->configure($options);
     }
   /*
@@ -142,7 +143,7 @@ class dmXmlSitemapGenerator extends dmConfigurable
             $sitemaps[] = sprintf('  <sitemap>
     <loc>%s</loc>
   </sitemap>',
-          $this->domain->returnLink("",$this->getOption('domain') . '/sitemap_'
+          $this->domain->returnLink("",'sitemap_'
                             . $culture . '_'
                             . $subdomain->get('Translation')->get($culture)->get('subdomain')
                             . '.xml',"DEFAULT",true));
@@ -202,7 +203,7 @@ class dmXmlSitemapGenerator extends dmConfigurable
     <loc>
       %s
     </loc>
-  </url>', $this->domain->returnLink($this->prefix,$pageSlug,$pageSubdomain,true));
+  </url>', $this->domain->returnLink('',$pageSlug,$pageSubdomain,true));
     }
 
   protected function write($filePath, $xml)
