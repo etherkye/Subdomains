@@ -54,16 +54,16 @@ abstract class dmFrontBaseServiceContainer extends dmBaseServiceContainer
      * and it will require the user to check its credentials
      */
       //var_dump($this->getService('user')->getUserId());
-//    if ($this->getService('user')->can('zone_add, widget_add, widget_edit_fast'))
-//    {
+    if ($this->getService('user')->can('zone_add, widget_add, widget_edit_fast'))
+    {
       $this->setParameter('page_helper.class', $this->getParameter('page_helper.edit_class'));
-//    }
-//    /*
-//     * User can not edit front so we load the view only class
-//     */
-//    else
-//    {
-//      $this->setParameter('page_helper.class', $this->getParameter('page_helper.view_class'));
-//    }
+    }
+    /*
+     * User can not edit front so we load the view only class
+     */
+    else
+    {
+      $this->setParameter('page_helper.class', $this->getParameter('page_helper.view_class'));
+    }
   }
 }

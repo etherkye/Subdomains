@@ -8,7 +8,7 @@ abstract class dmBaseServiceContainer extends sfServiceContainer
   public function configure(array $dependencies, array $options = array())
   {
     $this->options = array_merge($this->options, $options);
-    
+
     $this->loadDependencies($dependencies);
     
     $this->loadParameters();
@@ -121,9 +121,9 @@ abstract class dmBaseServiceContainer extends sfServiceContainer
        */
       $this->getService('javascript_compressor')->connect();
     }
-    
+
     $this->getService('user')->connect();
-    
+
     /*
      * Enable page i18n builder for multilingual sites
      */
