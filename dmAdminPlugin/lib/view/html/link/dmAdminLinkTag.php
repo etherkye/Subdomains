@@ -111,7 +111,9 @@ class dmAdminLinkTag extends dmBaseLinkTag
                     $subdomain = 'DEFAULT';
                 }
 
-                $resource = $this->serviceContainer->getService('script_name_resolver')->get($app,null,null,$subdomain) . $slug;
+                $prefix = $this->serviceContainer->getService('script_name_resolver')->guessBootScriptFromWebDir($app,null);
+
+                $resource = $this->serviceContainer->getService('domain')->returnLink($prefix, $slug, $subdomain);
             } elseif ($resource{0} === '/') {
                 $resource = $resource;
 
