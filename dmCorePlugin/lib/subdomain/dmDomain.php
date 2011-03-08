@@ -143,7 +143,7 @@ class dmDomain extends dmConfigurable {
      * @return dmDomain
      */
     public function setDomain($domain){
-        $this->domain = $domain;
+        $this->domain = $this->generateDomain($domain);
         return $this;
     }
 
@@ -213,6 +213,9 @@ class dmDomain extends dmConfigurable {
      * @return string 
      */
     public function returnLink($prefix, $slug, $subdomain,$full = false){
+        if(substr($slug,0,1) == '/'){
+            $slug = substr($slug,1);
+        }
         if($this->isSameSubdomain($subdomain) && !$full){
             $baseHref = $this->checkPrefix($prefix).'/'.$slug;
         }else{
