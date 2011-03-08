@@ -22,19 +22,26 @@ class dmAdminBaseGeneratedModuleActions extends dmAdminBaseActions
 	/**
 	 * @return dmDoctrineRecord
 	 */
-	public function getObject($relations = array())
+	public function getObject($relations = array(), $pk = 'pk')
 	{
 		if(!isset($this->object))
 		{
-			$pk = $this->getContext()->getRequest()->getParameter('pk', false);
-			if(!$pk)
+			$_pk = $this->getRequest()->getParameter($pk, false);
+			if(!$_pk) {
+				$_pk = $this->getRequest()->getGetParameter($pk, false);
+				if(!$_pk) {
+					$_pk = $this->getRequest()->getPostParameter($pk, false); 
+				}
+			}
+			
+			if(!$_pk)
 			{
 				$id = $this->getDmModule()->getTable()->getIdentifier();
-				$pk = $this->getContext()->getRequest()->getParameter($id, false);
+				$_pk = $this->getRequest()->getParameter($id, false);
 			}
 
-			if($pk){
-				$this->object = $this->buildObjectQuery($pk, $this->getRelationsAlias())->fetchOne();
+			if($_pk){
+				$this->object = $this->buildObjectQuery($_pk, $this->getRelationsAlias())->fetchOne();
 			}else{
 				$this->object = false;
 			}
@@ -619,9 +626,10 @@ class dmAdminBaseGeneratedModuleActions extends dmAdminBaseActions
 		if('is_active' === $field && $record->getDmModule()->hasPage() && ($page = $record->getDmPage()))
 		{
 			$page->setIsActiveManually(!$record->get($field))->save();
+		} else {
+			$record->set($field, !$record->get($field));
+			$record->save();
 		}
-		$record->set($field, !$record->get($field));
-		$record->save();
 
 		$this->getDispatcher()->notify(new sfEvent($this, 'dm.controller.redirect'));
 
@@ -718,12 +726,22 @@ class dmAdminBaseGeneratedModuleActions extends dmAdminBaseActions
 		$relations = array();
 		foreach($fields as $field)
 		{
-			if(substr($field, strlen($field)-5, strlen($field)) === '_list')
+			$relationName = false;
+			if(substr($field, strlen($field)-5, strlen($field)) === '_list'){
+				$relationName = substr($field, 0, strlen($field)-5);
+			}elseif(substr($field, 0, 1) === '_'){
+				$relationName = substr($field, 1, strlen($field) -1);
+			}
+			if($relationName)
 			{
-				$field = dmString::camelize(substr($field, 0, strlen($field)-5));
+				$field = dmString::camelize($relationName);
 				if( $this->getDmModule()->getTable()->hasRelation($field))
 				{
-					$relations[] = $field;
+					//don't add Doctrine_Relation_LocalKey !
+					if(!$this->getDmModule()->getTable()->getRelation($field) instanceof Doctrine_Relation_LocalKey)
+					{
+						$relations[] = $field;
+					}
 				}
 			}
 		}
