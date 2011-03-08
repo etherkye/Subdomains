@@ -125,6 +125,11 @@ abstract class PluginDmMedia extends BaseDmMedia
 
   public function getRelPath()
   {
+
+    if (!is_object($this->get('Folder')))
+    {
+      throw new dmException('Folder has been deleted. Image is unreachable.');
+    }
     return trim($this->get('Folder')->get('rel_path').'/'.$this->get('file'), '/');
   }
 

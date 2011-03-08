@@ -243,6 +243,10 @@ class dmMediaTagImage extends dmMediaTag
     {
       throw new dmException('Can be used only if the source is a DmMedia instance');
     }
+    if (!is_object($media->get('Folder')))
+    {
+      throw new dmException('Folder has been deleted. Image is unreachable.');
+    }
 
     if (empty($attributes['width']))
     {
