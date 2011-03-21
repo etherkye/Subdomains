@@ -38,12 +38,10 @@ abstract class BaseDmAutoSeoTranslationFormFilter extends BaseFormFilterDoctrine
 			$this->setWidget('keywords', new sfWidgetFormDmFilterInput());
 			$this->setValidator('keywords', new sfValidatorString(array('required' => false)));
 		}
-
 		if($this->needsWidget('subdomain')){
 			$this->setWidget('subdomain', new sfWidgetFormDmFilterInput());
 			$this->setValidator('subdomain', new sfValidatorString(array('required' => false)));
 		}
-
 		if($this->needsWidget('strip_words')){
 			$this->setWidget('strip_words', new sfWidgetFormDmFilterInput());
 			$this->setValidator('strip_words', new sfValidatorString(array('required' => false)));

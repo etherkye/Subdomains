@@ -115,16 +115,6 @@ abstract class BaseDmUserForm extends BaseFormDoctrine
 			$this->setValidator('dm_test_posts_list', new sfValidatorDoctrineChoice(array('multiple' => true, 'model' => 'DmTestPost', 'required' => false)));
 		}
 		//one to many
-		if($this->needsWidget('created_dm_test_domain_translations_list')){
-			$this->setWidget('created_dm_test_domain_translations_list', new sfWidgetFormDmPaginatedDoctrineChoice(array('multiple' => true, 'model' => 'DmTestDomainTranslation', 'expanded' => true)));
-			$this->setValidator('created_dm_test_domain_translations_list', new sfValidatorDoctrineChoice(array('multiple' => true, 'model' => 'DmTestDomainTranslation', 'required' => false)));
-		}
-		//one to many
-		if($this->needsWidget('updated_dm_test_domain_translations_list')){
-			$this->setWidget('updated_dm_test_domain_translations_list', new sfWidgetFormDmPaginatedDoctrineChoice(array('multiple' => true, 'model' => 'DmTestDomainTranslation', 'expanded' => true)));
-			$this->setValidator('updated_dm_test_domain_translations_list', new sfValidatorDoctrineChoice(array('multiple' => true, 'model' => 'DmTestDomainTranslation', 'required' => false)));
-		}
-		//one to many
 		if($this->needsWidget('created_dm_test_fruits_list')){
 			$this->setWidget('created_dm_test_fruits_list', new sfWidgetFormDmPaginatedDoctrineChoice(array('multiple' => true, 'model' => 'DmTestFruit', 'expanded' => true)));
 			$this->setValidator('created_dm_test_fruits_list', new sfValidatorDoctrineChoice(array('multiple' => true, 'model' => 'DmTestFruit', 'required' => false)));
@@ -133,6 +123,16 @@ abstract class BaseDmUserForm extends BaseFormDoctrine
 		if($this->needsWidget('updated_dm_test_fruits_list')){
 			$this->setWidget('updated_dm_test_fruits_list', new sfWidgetFormDmPaginatedDoctrineChoice(array('multiple' => true, 'model' => 'DmTestFruit', 'expanded' => true)));
 			$this->setValidator('updated_dm_test_fruits_list', new sfValidatorDoctrineChoice(array('multiple' => true, 'model' => 'DmTestFruit', 'required' => false)));
+		}
+		//one to many
+		if($this->needsWidget('created_dm_test_domain_translations_list')){
+			$this->setWidget('created_dm_test_domain_translations_list', new sfWidgetFormDmPaginatedDoctrineChoice(array('multiple' => true, 'model' => 'DmTestDomainTranslation', 'expanded' => true)));
+			$this->setValidator('created_dm_test_domain_translations_list', new sfValidatorDoctrineChoice(array('multiple' => true, 'model' => 'DmTestDomainTranslation', 'required' => false)));
+		}
+		//one to many
+		if($this->needsWidget('updated_dm_test_domain_translations_list')){
+			$this->setWidget('updated_dm_test_domain_translations_list', new sfWidgetFormDmPaginatedDoctrineChoice(array('multiple' => true, 'model' => 'DmTestDomainTranslation', 'expanded' => true)));
+			$this->setValidator('updated_dm_test_domain_translations_list', new sfValidatorDoctrineChoice(array('multiple' => true, 'model' => 'DmTestDomainTranslation', 'required' => false)));
 		}
 		//one to many
 		if($this->needsWidget('dm_user_group_list')){
@@ -241,16 +241,6 @@ abstract class BaseDmUserForm extends BaseFormDoctrine
       $this->setDefault('dm_test_posts_list', $this->object->DmTestPosts->getPrimaryKeys());
     }
 
-    if (isset($this->widgetSchema['created_dm_test_domain_translations_list']))
-    {
-      $this->setDefault('created_dm_test_domain_translations_list', $this->object->CreatedDmTestDomainTranslations->getPrimaryKeys());
-    }
-
-    if (isset($this->widgetSchema['updated_dm_test_domain_translations_list']))
-    {
-      $this->setDefault('updated_dm_test_domain_translations_list', $this->object->UpdatedDmTestDomainTranslations->getPrimaryKeys());
-    }
-
     if (isset($this->widgetSchema['created_dm_test_fruits_list']))
     {
       $this->setDefault('created_dm_test_fruits_list', $this->object->CreatedDmTestFruits->getPrimaryKeys());
@@ -259,6 +249,16 @@ abstract class BaseDmUserForm extends BaseFormDoctrine
     if (isset($this->widgetSchema['updated_dm_test_fruits_list']))
     {
       $this->setDefault('updated_dm_test_fruits_list', $this->object->UpdatedDmTestFruits->getPrimaryKeys());
+    }
+
+    if (isset($this->widgetSchema['created_dm_test_domain_translations_list']))
+    {
+      $this->setDefault('created_dm_test_domain_translations_list', $this->object->CreatedDmTestDomainTranslations->getPrimaryKeys());
+    }
+
+    if (isset($this->widgetSchema['updated_dm_test_domain_translations_list']))
+    {
+      $this->setDefault('updated_dm_test_domain_translations_list', $this->object->UpdatedDmTestDomainTranslations->getPrimaryKeys());
     }
 
     if (isset($this->widgetSchema['dm_user_group_list']))
@@ -292,10 +292,10 @@ abstract class BaseDmUserForm extends BaseFormDoctrine
     $this->saveDmLockList($con);
     $this->savePostsList($con);
     $this->saveDmTestPostsList($con);
-    $this->saveCreatedDmTestDomainTranslationsList($con);
-    $this->saveUpdatedDmTestDomainTranslationsList($con);
     $this->saveCreatedDmTestFruitsList($con);
     $this->saveUpdatedDmTestFruitsList($con);
+    $this->saveCreatedDmTestDomainTranslationsList($con);
+    $this->saveUpdatedDmTestDomainTranslationsList($con);
     $this->saveDmUserGroupList($con);
     $this->saveDmUserPermissionList($con);
     $this->saveDmRecordPermissionUserList($con);
@@ -570,82 +570,6 @@ abstract class BaseDmUserForm extends BaseFormDoctrine
     }
   }
 
-  public function saveCreatedDmTestDomainTranslationsList($con = null)
-  {
-    if (!$this->isValid())
-    {
-      throw $this->getErrorSchema();
-    }
-
-    if (!isset($this->widgetSchema['created_dm_test_domain_translations_list']))
-    {
-      // somebody has unset this widget
-      return;
-    }
-
-    if (null === $con)
-    {
-      $con = $this->getConnection();
-    }
-
-    $existing = $this->object->CreatedDmTestDomainTranslations->getPrimaryKeys();
-    $values = $this->getValue('created_dm_test_domain_translations_list');
-    if (!is_array($values))
-    {
-      $values = array();
-    }
-
-    $unlink = array_diff($existing, $values);
-    if (count($unlink))
-    {
-      $this->object->unlink('CreatedDmTestDomainTranslations', array_values($unlink));
-    }
-
-    $link = array_diff($values, $existing);
-    if (count($link))
-    {
-      $this->object->link('CreatedDmTestDomainTranslations', array_values($link));
-    }
-  }
-
-  public function saveUpdatedDmTestDomainTranslationsList($con = null)
-  {
-    if (!$this->isValid())
-    {
-      throw $this->getErrorSchema();
-    }
-
-    if (!isset($this->widgetSchema['updated_dm_test_domain_translations_list']))
-    {
-      // somebody has unset this widget
-      return;
-    }
-
-    if (null === $con)
-    {
-      $con = $this->getConnection();
-    }
-
-    $existing = $this->object->UpdatedDmTestDomainTranslations->getPrimaryKeys();
-    $values = $this->getValue('updated_dm_test_domain_translations_list');
-    if (!is_array($values))
-    {
-      $values = array();
-    }
-
-    $unlink = array_diff($existing, $values);
-    if (count($unlink))
-    {
-      $this->object->unlink('UpdatedDmTestDomainTranslations', array_values($unlink));
-    }
-
-    $link = array_diff($values, $existing);
-    if (count($link))
-    {
-      $this->object->link('UpdatedDmTestDomainTranslations', array_values($link));
-    }
-  }
-
   public function saveCreatedDmTestFruitsList($con = null)
   {
     if (!$this->isValid())
@@ -719,6 +643,82 @@ abstract class BaseDmUserForm extends BaseFormDoctrine
     if (count($link))
     {
       $this->object->link('UpdatedDmTestFruits', array_values($link));
+    }
+  }
+
+  public function saveCreatedDmTestDomainTranslationsList($con = null)
+  {
+    if (!$this->isValid())
+    {
+      throw $this->getErrorSchema();
+    }
+
+    if (!isset($this->widgetSchema['created_dm_test_domain_translations_list']))
+    {
+      // somebody has unset this widget
+      return;
+    }
+
+    if (null === $con)
+    {
+      $con = $this->getConnection();
+    }
+
+    $existing = $this->object->CreatedDmTestDomainTranslations->getPrimaryKeys();
+    $values = $this->getValue('created_dm_test_domain_translations_list');
+    if (!is_array($values))
+    {
+      $values = array();
+    }
+
+    $unlink = array_diff($existing, $values);
+    if (count($unlink))
+    {
+      $this->object->unlink('CreatedDmTestDomainTranslations', array_values($unlink));
+    }
+
+    $link = array_diff($values, $existing);
+    if (count($link))
+    {
+      $this->object->link('CreatedDmTestDomainTranslations', array_values($link));
+    }
+  }
+
+  public function saveUpdatedDmTestDomainTranslationsList($con = null)
+  {
+    if (!$this->isValid())
+    {
+      throw $this->getErrorSchema();
+    }
+
+    if (!isset($this->widgetSchema['updated_dm_test_domain_translations_list']))
+    {
+      // somebody has unset this widget
+      return;
+    }
+
+    if (null === $con)
+    {
+      $con = $this->getConnection();
+    }
+
+    $existing = $this->object->UpdatedDmTestDomainTranslations->getPrimaryKeys();
+    $values = $this->getValue('updated_dm_test_domain_translations_list');
+    if (!is_array($values))
+    {
+      $values = array();
+    }
+
+    $unlink = array_diff($existing, $values);
+    if (count($unlink))
+    {
+      $this->object->unlink('UpdatedDmTestDomainTranslations', array_values($unlink));
+    }
+
+    $link = array_diff($values, $existing);
+    if (count($link))
+    {
+      $this->object->link('UpdatedDmTestDomainTranslations', array_values($link));
     }
   }
 

@@ -48,13 +48,11 @@ abstract class BaseDmAutoSeoTranslationForm extends BaseFormDoctrine
 			$this->setValidator('keywords', new sfValidatorString(array('max_length' => 255, 'required' => false)));
 		}
 		//column
-
 		if($this->needsWidget('subdomain')){
 			$this->setWidget('subdomain', new sfWidgetFormInputText());
 			$this->setValidator('subdomain', new sfValidatorString(array('max_length' => 255, 'required' => false)));
 		}
 		//column
-
 		if($this->needsWidget('strip_words')){
 			$this->setWidget('strip_words', new sfWidgetFormTextarea());
 			$this->setValidator('strip_words', new sfValidatorString(array('max_length' => 10000, 'required' => false)));

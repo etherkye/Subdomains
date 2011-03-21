@@ -138,13 +138,15 @@ class dmAdminLinkTag extends dmBaseLinkTag
         } elseif (is_object($this->resource) && $this->resource instanceof dmDoctrineRecord) {
             if ($this->resource instanceof DmPage) {
                 $resource = $this->serviceContainer->getService('script_name_resolver')->get('front') . '/' . $this->resource->get('slug');
-            } elseif (($module = $this->resource->getDmModule()) && $module->hasAdmin()) {
+            } elseif (($module = $this->resource->getDmModule()) && $module->hasAdmin() && $module->getSecurityManager()->userHasCredentials('edit', $this->resource)) {
                 $resource = array(
                     'sf_route' => $module->getUnderscore(),
                     'action' => 'edit',
                     'pk' => $this->resource->getPrimaryKey()
                 );
-            }
+          }else{
+            $resource = '#';
+          }
         }
 
         if (isset($resource)) {
@@ -154,6 +156,7 @@ class dmAdminLinkTag extends dmBaseLinkTag
                 return $this->serviceContainer->getService('controller')->genUrl($resource);
             }
         }
+
 
         throw new dmException('Can not find href for ' . $this->resource);
     }
