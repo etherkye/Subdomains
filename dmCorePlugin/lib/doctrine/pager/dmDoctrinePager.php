@@ -106,16 +106,6 @@ class dmDoctrinePager extends sfDoctrinePager
 	 *
 	 * @return Doctrine_Query
 	 */
-<<<<<<< HEAD
-        public function getQuery($withI18n = false)
-        {
-                if($withI18n && dmDb::table($this->class)->hasI18n())
-                {
-                        return parent::getQuery()->withI18n();
-                }
-                return parent::getQuery();
-        }
-=======
 	public function getQuery($withI18n = false)
 	{
 		if($withI18n && dmDb::table($this->class)->hasI18n())
@@ -133,5 +123,4 @@ class dmDoctrinePager extends sfDoctrinePager
 	{
 		return isset($this->query);
 	}
->>>>>>> dab2d436f4a2ac2b31d090094cd054b3075be416
 }
