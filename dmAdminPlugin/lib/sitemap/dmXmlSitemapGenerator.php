@@ -165,11 +165,13 @@ class dmXmlSitemapGenerator extends dmConfigurable
    * Wich pages should figure on sitemap ?
    * @return array of dmPage objects
    */
+
     protected function getPages($culture, $subdomain) {
         $query = dmDb::query('DmPage p')
                 ->withI18n($culture)
                 ->where('pTranslation.is_secure = ?', false)
                 ->addWhere('pTranslation.is_active = ?', true)
+                ->addWhere('pTranslation.is_indexable = ?', true)
                 ->addWhere('p.module != ? OR ( p.action != ? AND p.action != ? AND p.action != ?)', array('main', 'error404', 'search', 'signin'));
                 if(!empty($this->notIn)){
                     $query->andWhere('p.module NOT IN ? OR p.action = ?', array($this->notIn, 'list'));
