@@ -70,7 +70,7 @@ class DmPageFrontEditForm extends DmPageForm
       'dm_layout_id' => $this->object->get('PageView')->get('dm_layout_id'),
       'name'      => $this->object->get('name'),
       'slug'      => $this->object->get('slug'),
-      'subdomain' => $this->object-get('subdomain'),
+      'subdomain' => $this->object->get('subdomain'),
       'title'     => $this->object->get('title'),
       'h1'        => $this->object->get('h1'),
       'description' => $this->object->get('description'),
@@ -115,6 +115,7 @@ class DmPageFrontEditForm extends DmPageForm
         $this->object->getNode()->moveAsLastChildOf(dmDb::table('DmPage')->find($values['parent_id']));
       }
     }
+
     
     $this->object->get('PageView')->set('dm_layout_id', $values['dm_layout_id']);
     
