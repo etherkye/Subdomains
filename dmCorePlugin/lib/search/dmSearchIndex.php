@@ -4,21 +4,21 @@ require_once('Zend/Search/Lucene.php');
 
 class dmSearchIndex extends dmSearchIndexCommon
 {
-  protected
-  $luceneIndex;
-  
+  protected $luceneIndex;
+  protected $pagesQueryCache = false;
+
   protected function initialize(array $options)
   {
     parent::initialize($options);
-    
+
     if (!$this->getOption('dir'))
     {
       throw new dmSearchIndexException('Can not create an index without dir option');
     }
-    
+
     $this->createLuceneIndex();
   }
-  
+
   public function getFullPath()
   {
     return dmProject::rootify($this->getOption('dir'));
@@ -48,7 +48,7 @@ class dmSearchIndex extends dmSearchIndexCommon
   {
     return $this->getOption('culture');
   }
-  
+
   public function setCulture($culture)
   {
     return $this->setOption('culture', $culture);
@@ -83,18 +83,18 @@ class dmSearchIndex extends dmSearchIndexCommon
   protected function getLuceneQuery($query)
   {
     $words = str_word_count($query, 1);
-    
+
     $query = new Zend_Search_Lucene_Search_Query_Boolean();
-    
+
     foreach($words as $word)
     {
       $term = new Zend_Search_Lucene_Index_Term($word);
       $subQuery = new Zend_Search_Lucene_Search_Query_Fuzzy($term, 0.4);
       $query->addSubquery($subQuery, true);
     }
-    
+
     return $query;
-    
+
     //  return Zend_Search_Lucene_Search_QueryParser::parse($query);
 //    $term = new Zend_Search_Lucene_Index_Term($query);
 //    return new Zend_Search_Lucene_Search_Query_Fuzzy($term, 0.4);
@@ -105,46 +105,87 @@ class dmSearchIndex extends dmSearchIndexCommon
     $start  = microtime(true);
     $logger = $this->serviceContainer->getService('logger');
     $user   = $this->serviceContainer->getService('user');
-    
+
     $logger->log($this->getName().': Populating index...');
 
     $this->erase();
-    
+
     $this->serviceContainer->mergeParameter('search_document.options', array(
       'culture' => $this->getCulture()
     ));
 
-    $pager = $this->serviceContainer
-    ->setParameter('doctrine_pager.model', 'DmPage')
-    ->getService('doctrine_pager')
-    ->setMaxPerPage(100)
-    ->setQuery($this->getPagesQuery())
-    ->setPage(1)
-    ->init();
-
-    $nb = 1;
-    $nbMax = $pager->getNbResults();
-    $pagerPage = 1;
-    $pagerPageMax = $pager->getLastPage();
-    
-    if (!count($nbMax))
-    {
-      $logger->log($this->getName().': No pages to populate the index');
-      return;
-    }
-    
     $oldCulture = $user->getCulture();
     $user->setCulture($this->getCulture());
 
-    while($pagerPage <= $pagerPageMax)
+    $limit = 200;
+    $offset = 0;
+
+    $nbPages = 0;
+
+    do
     {
-      foreach ($pager->getResultsWithoutCache() as $page)
-      {
-        $logger->log($this->getName().' '.$nb.'/'.$nbMax.': /'.$page->get('slug'));
+      $result = $this->populateStep($offset, $limit, $logger);
+
+      if ($result > 0) {
+        $nbPages = $nbPages + $result;
+      }
+
+      $offset = $offset + $limit;
+    }
+    while ($result !== false);
+
+    if ($offset === 0 && $nbPages === 0) {
+      $logger->log($this->getName().': No pages to populate the index');
+      return;
+    }
+
+    echo "Memory usage: " . memory_get_peak_usage() / 1024 . "\n";
+
+    $user->setCulture($oldCulture);
+
+    $time = microtime(true) - $start;
+
+    $logger->log($this->getName().': Index populated in ' . round($time, 2) . ' seconds.');
+
+    $logger->log($this->getName().': Time per document ' . round($time / $nbPages, 3) . ' seconds.');
+
+    $this->serviceContainer->get('dispatcher')->notify(new sfEvent($this, 'dm.search.populated', array(
+      'culture' => $this->getCulture(),
+      'name' => $this->getName(),
+      'nb_documents' => $nbPages,
+      'time' => $time
+    )));
+
+    $this->fixPermissions();
+  }
+
+  protected function populateStep($offset, $limit, $logger)
+  {
+    /* @var $query myDoctrineQuery */
+    $query = $this->getPagesQuery();
+    $pages = $query->offset($offset)->limit($limit)->execute();
+    $query->free();
+    unset($query);
+
+    $nbPages = count($pages);
+
+    if ($nbPages <= 0) return false;
+
+    for ($i=0; $i < $nbPages; ++$i)
+    {
+        $page =& $pages[$i];
+
+        unset($pages[$i]);
+
+        $entry = $offset + 1 + $i;
+
+        $logger->log($this->getName() . ' ' . $entry . ': /' . $page->getSlug());
 
         $document = $this->serviceContainer
         ->setParameter('search_document.source', $page)
         ->getService('search_document');
+
+        unset($page);
 
         try
         {
@@ -153,16 +194,87 @@ class dmSearchIndex extends dmSearchIndexCommon
         }
         catch(dmSearchPageNotIndexableException $e)
         {
-          $logger->log('SKIPPED '.$page->get('slug'));
+          $logger->log('SKIPPED '.$slug);
         }
+
+        unset($document);
+    }
+
+    return $nbPages;
+  }
+
+  /*public function populate()
+  {
+    $start  = microtime(true);
+    $logger = $this->serviceContainer->getService('logger');
+    $user   = $this->serviceContainer->getService('user');
+
+    $maxPerPage = 200;
+
+    $logger->log($this->getName().': Populating index...');
+
+    $this->erase();
+
+    $this->serviceContainer->mergeParameter('search_document.options', array(
+      'culture' => $this->getCulture()
+    ));
+
+    /* @var $pager dmDoctrinePager
+    $pager = $this->serviceContainer
+    ->setParameter('doctrine_pager.model', 'DmPage')
+    ->getService('doctrine_pager')
+    ->setMaxPerPage($maxPerPage)
+    ->setQuery($this->getPagesQuery())
+    ->setPage(1)
+    ->init();
+
+    $nb = 1;
+    $nbMax = $pager->getNbResults();
+    $pagerPageMax = $pager->getLastPage();
+
+    if (!count($nbMax))
+    {
+      $logger->log($this->getName().': No pages to populate the index');
+      return;
+    }
+
+    $oldCulture = $user->getCulture();
+    $user->setCulture($this->getCulture());
+
+    for ($pagerPage = 1; $pagerPage <= $pagerPageMax; ++$pagerPage)
+    {
+      if ($pagerPage !== 1) $pager->setPage($pagerPage)->init();
+
+      $pages = $pager->getResultsWithoutCache();
+
+      for ($i=0;$i<$maxPerPage && $nb <= $nbMax;++$i)
+      {
+        $page =& $pages[$i];
+        $slug = $page->getSlug();
+        $logger->log($this->getName().' '.$nb.'/'.$nbMax.': /'.$slug);
+
+        $document = $this->serviceContainer
+        ->setParameter('search_document.source', $page)
+        ->getService('search_document');
+
+        unset($page);
+
+        try
+        {
+          $document->populate();
+          $this->luceneIndex->addDocument($document);
+        }
+        catch(dmSearchPageNotIndexableException $e)
+        {
+          $logger->log('SKIPPED '.$slug);
+        }
+
+        unset($document);
 
         ++$nb;
       }
-
-      ++$pagerPage;
-      $pager->setPage($pagerPage)->init();
     }
-    
+
     $user->setCulture($oldCulture);
 
     $time = microtime(true) - $start;
@@ -177,17 +289,17 @@ class dmSearchIndex extends dmSearchIndexCommon
       'nb_documents' => $nbMax,
       'time' => $time
     )));
-    
+
     $this->fixPermissions();
-  }
+  }*/
 
   public function optimize()
   {
     $start = microtime(true);
     $logger = $this->serviceContainer->getService('logger')->log($this->getName().': Optimizing index...');
-    
+
     $this->luceneIndex->optimize();
-    
+
     $this->fixPermissions();
 
     $logger = $this->serviceContainer->getService('logger')->log($this->getName().': Index optimized in "' . round(microtime(true) - $start, 2) . '" seconds.');
@@ -196,18 +308,20 @@ class dmSearchIndex extends dmSearchIndexCommon
   protected function erase()
   {
     $this->serviceContainer->getService('filesystem')->deleteDirContent($this->getFullPath());
-    
+
     $this->createLuceneIndex();
   }
 
   public function getPagesQuery()
   {
-    return dmDb::table('DmPage')
-    ->createQuery('p')
-    ->withI18n($this->getCulture())
-    ->where('pTranslation.is_active = ?', true)
-    ->andWhere('pTranslation.is_secure = ?', false)
-    ->andWhere('p.module != ? OR ( p.action != ? AND p.action != ? AND p.action != ?)', array('main', 'error404', 'search', 'signin'));
+    $this->pagesQueryCache = dmDb::table('DmPage')
+           ->createQuery('p')
+           ->withI18n($this->getCulture())
+           ->where('pTranslation.is_active = ?', true)
+           ->andWhere('pTranslation.is_secure = ?', false)
+           ->andWhere('p.module != ? OR ( p.action != ? AND p.action != ? AND p.action != ?)', array('main', 'error404', 'search', 'signin'));
+
+    return $this->pagesQueryCache;
   }
 
   /**

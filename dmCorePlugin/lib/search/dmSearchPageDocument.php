@@ -159,26 +159,103 @@ class dmSearchPageDocument extends Zend_Search_Lucene_Document
    *
    * @return string the page text content
    */
-  protected function getPageContent()
+//  protected function getPageContent()
+//  {
+//    if(null !== $this->pageContentCache)
+//    {
+//      return $this->pageContentCache;
+//    }
+//
+//    if (sfConfig::get('sf_app') !== 'front')
+//    {
+//      throw new dmException('Can only be used in front app ( current : '.sfConfig::get('sf_app').' )');
+//    }
+//
+//    $culture  = $this->options['culture'];
+//
+//    $this->context->setPage($this->page);
+//
+//    $serviceContainer   = $this->context->getServiceContainer();
+//    $helper             = $serviceContainer->get('page_helper');
+//    $widgetTypeManager  = $serviceContainer->get('widget_type_manager');
+//
+//    $pageView = self::getPageViewQuery()->fetchArray(array($this->page->get('module'), $this->page->get('action')));
+//
+//    $areaIds = array();
+//    foreach($pageView[0]['Areas'] as $area)
+//    {
+//      $areaIds[] = $area['id'];
+//    }
+//    $zonesQuery = clone self::getZonesQuery($culture);
+//    $zones = $zonesQuery
+//    ->whereIn('z.dm_area_id', $areaIds)
+//    ->fetchArray();
+//
+//    sfConfig::set('dm_search_populating', true);
+//
+//    $this->pageContentCache = '';
+//
+//    foreach($zones as $zone)
+//    {
+//      foreach($zone['Widgets'] as $widget)
+//      {
+//        try
+//        {
+//          $widget['value'] = isset($widget['Translation'][$culture]['value']) ? $widget['Translation'][$culture]['value'] : '';
+//          unset($widget['Translation']);
+//
+//          $widgetType = $widgetTypeManager->getWidgetType($widget['module'], $widget['action']);
+//
+//          try
+//          {
+//            $this->pageContentCache .= $serviceContainer
+//            ->addParameters(array(
+//              'widget_view.class' => $widgetType->getViewClass(),
+//              'widget_view.type'  => $widgetType,
+//              'widget_view.data'  => $widget
+//            ))
+//            ->getService('widget_view')
+//            ->renderForIndex();
+//          }
+//          catch(dmFormNotFoundException $e)
+//          {
+//            // a form is required but not available, skip this widget
+//          }
+//        }
+//        catch(Exception $e)
+//        {
+//          // pass on errors
+//        }
+//      }
+//    }
+//
+//    sfConfig::set('dm_search_populating', false);
+//
+//    unset($areas, $zones, $html, $helper);
+//
+//    return $this->pageContentCache;
+//  }
+
+   protected function getPageContent()
   {
     if(null !== $this->pageContentCache)
     {
       return $this->pageContentCache;
     }
-    
+
     if (sfConfig::get('sf_app') !== 'front')
     {
       throw new dmException('Can only be used in front app ( current : '.sfConfig::get('sf_app').' )');
     }
-    
+
     $culture  = $this->options['culture'];
-    
+
     $this->context->setPage($this->page);
-    
+
     $serviceContainer   = $this->context->getServiceContainer();
     $helper             = $serviceContainer->get('page_helper');
     $widgetTypeManager  = $serviceContainer->get('widget_type_manager');
-    
+
     $pageView = self::getPageViewQuery()->fetchArray(array($this->page->get('module'), $this->page->get('action')));
 
     $areaIds = array();
@@ -186,18 +263,29 @@ class dmSearchPageDocument extends Zend_Search_Lucene_Document
     {
       $areaIds[] = $area['id'];
     }
+
+    unset($pageView);
+
+    /* @var $zonesQuery dmDoctrineQuery */
     $zonesQuery = clone self::getZonesQuery($culture);
     $zones = $zonesQuery
     ->whereIn('z.dm_area_id', $areaIds)
     ->fetchArray();
-    
+
+    $zonesQuery->free();
+    unset($zonesQuery);
+
     sfConfig::set('dm_search_populating', true);
 
     $this->pageContentCache = '';
-    
-    foreach($zones as $zone)
+
+    $zonesNb = count($zones);
+
+    $contents = array();
+
+    for($i=0;$i<$zonesNb;++$i)
     {
-      foreach($zone['Widgets'] as $widget)
+      foreach($zones[$i]['Widgets'] as $widget)
       {
         try
         {
@@ -206,33 +294,38 @@ class dmSearchPageDocument extends Zend_Search_Lucene_Document
 
           $widgetType = $widgetTypeManager->getWidgetType($widget['module'], $widget['action']);
 
-          try
-          {
-            $this->pageContentCache .= $serviceContainer
-            ->addParameters(array(
+          $contents[] = $serviceContainer->addParameters(array(
               'widget_view.class' => $widgetType->getViewClass(),
               'widget_view.type'  => $widgetType,
               'widget_view.data'  => $widget
-            ))
-            ->getService('widget_view')
-            ->renderForIndex();
-          }
-          catch(dmFormNotFoundException $e)
-          {
-            // a form is required but not available, skip this widget
-          }
+          ))->getService('widget_view');
         }
         catch(Exception $e)
         {
           // pass on errors
         }
+
+        unset($widgetType);
       }
     }
 
+    $contentsNb = count($contents);
+
+    for ($i=0;$i<$contentsNb;++$i) {
+      try
+      {
+        $this->pageContentCache .= $contents[$i]->renderForIndex();
+      }
+      catch (dmFormNotFoundException $e)
+      {
+        // a form is required but not available, skip this widget
+      }
+    }
+
+    unset($areas, $zones, $html, $helper, $contents);
+
     sfConfig::set('dm_search_populating', false);
-    
-    unset($areas, $zones, $html, $helper);
-    
+
     return $this->pageContentCache;
   }
 
