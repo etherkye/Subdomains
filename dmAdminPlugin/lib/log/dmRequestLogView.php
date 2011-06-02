@@ -37,7 +37,7 @@ class dmRequestLogView extends dmLogView
 
   protected function getBrowserIcon($browser)
   {
-    if(in_array($browser->getName(), array('googlebot', 'yahoobot', 'msnbot')))
+    if(in_array($browser->getName(), array('googlebot', 'yahoobot', 'msnbot', 'pingdombot', 'apple-pubsub', 'mj12bot', 'baiduspider', 'bingbot', 'discobot')))
     {
       $icon = $browser->getName(). ' browser_bot';
     }
