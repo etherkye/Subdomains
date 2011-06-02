@@ -20,7 +20,7 @@ class dmFrontInitFilter extends dmInitFilter
       $this->loadAssetConfig();
 
       // ajax calls use dm_cpi or page_id request parameter to set a page
-      if($pageId = $this->request->getParameter('dm_cpi', $this->request->getParameter('page_id')))
+      if($pageId = $this->request->getParameter('dm_cpi', $this->request->getParameter('page_id', 1)))
       {
         if (!$page = dmDb::table('DmPage')->findOneByIdWithI18n($pageId))
         {
@@ -75,6 +75,20 @@ class dmFrontInitFilter extends dmInitFilter
   public function generatePageCacheKey($internalUri, $hostName, $vary, $contextualPrefix, sfViewCacheManager $viewCacheManager)
   {
     sfConfig::set('sf_cache_namespace_callable', null);
+
+    $pageCacheConfig = sfConfig::get('dm_performance_page_cache');
+    foreach($pageCacheConfig['exclude'] as $variable){
+        if($pos = strpos($internalUri, $variable))
+        {
+          $end = strpos($internalUri, '&', $pos);
+          if($end === false){
+            $internalUri = substr_replace($internalUri,'', $pos-1);
+          }else{
+              $internalUri = substr_replace($internalUri,'', $pos-1, $end-$pos);
+          }
+        }
+    }
+
     $cacheKey = $viewCacheManager->generateCacheKey($internalUri, $hostName, $vary, $contextualPrefix);
     sfConfig::set('sf_cache_namespace_callable', array($this, 'generatePageCacheKey'));
 
