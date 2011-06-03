@@ -13,11 +13,12 @@ class dmRequestLogEntry extends dmLogEntry
   {
     $isXhr = $data['context']->getRequest()->isXmlHttpRequest();
     $uri = $this->cleanUri(dmArray::get($data['server'], 'PATH_INFO', $data['server']['REQUEST_URI']));
+    $subdomain = $this->serviceContainer->getService('domain')->generateSubDomain($data['server']['SERVER_NAME']);
     $milliseconds = (microtime(true) - dm::getStartTime()) * 1000;
     
     $this->data = array(
       'time'          => (string) $data['server']['REQUEST_TIME'],
-      'uri'           => dmString::truncate($uri, 500),
+      'uri'           => dmString::truncate($uri, 500),      
       'code'          => (string) $data['context']->getResponse()->getStatusCode(),
       'app'           => (string) sfConfig::get('sf_app'),
       'env'           => (string) sfConfig::get('sf_environment'),
@@ -27,7 +28,8 @@ class dmRequestLogEntry extends dmLogEntry
       'xhr'           => (int)    $isXhr,
       'mem'           => (string) memory_get_peak_usage(true),
       'timer'         => (string) sprintf('%.0f', $milliseconds),
-      'cache'         => sfConfig::get('dm_internal_page_cached')
+      'cache'         => sfConfig::get('dm_internal_page_cached'),
+      'subdomain'     => (string) $subdomain
     );
   }
   

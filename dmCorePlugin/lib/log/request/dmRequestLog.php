@@ -15,7 +15,8 @@ class dmRequestLog extends dmFileLog
     'xhr',
     'mem',
     'timer',
-    'cache'
+    'cache',
+    'subdomain'
   );
   
   public function getDefaultOptions()

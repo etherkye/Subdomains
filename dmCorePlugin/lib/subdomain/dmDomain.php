@@ -73,7 +73,10 @@ class dmDomain extends dmConfigurable {
      * 
      * @return string the current subdomain
      */
-    private function generateSubDomain($domainb, $domain) {
+    public function generateSubDomain($domainb, $domain = null) {
+        if(is_null($domain)){
+            $domain = $this->domain;
+        }
         $bits = explode('/', $domainb);
         if ($bits[0] == 'http:' || $bits[0] == 'https:') {
             $domainb = $bits[2];
