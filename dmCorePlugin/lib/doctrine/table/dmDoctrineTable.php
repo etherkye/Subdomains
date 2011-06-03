@@ -786,6 +786,6 @@ abstract class dmDoctrineTable extends Doctrine_Table
 	
   public function getAutoSeoFields()
   {
-  	return array('slug', 'name', 'title', 'h1', 'description', 'keywords');
+  	return array('slug', 'name', 'title', 'h1', 'description', 'keywords','subdomain');
   }
 }
