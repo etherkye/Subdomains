@@ -157,6 +157,7 @@ abstract class dmDoctrineRecord extends sfDoctrineRecord
       'next' => count($pks) == ($recordOffset+1) ? null : (isset($pks[$recordOffset+1]) ? $pks[$recordOffset+1] : null)
 		); 
 
+
 		$pks = array_unique(array_filter(array_values($map)));
 
 		$records = empty($pks) ? array() : $this->_table->createQuery('q INDEXBY q.'.$pk)->whereIn('q.'.$pk, $pks)->fetchRecords();
@@ -930,15 +931,20 @@ abstract class dmDoctrineRecord extends sfDoctrineRecord
 	 */
 	protected
 	$cache;
+	
+	/**
+	 * dmMicroCache
+	 */
+	protected static $classCache = array();
 
-	protected function getCache($cacheKey)
+	protected function getCache($cacheKey, $default = null)
 	{
 		if(isset($this->cache[$cacheKey]))
 		{
 			return $this->cache[$cacheKey];
 		}
 
-		return null;
+		return $default;
 	}
 
 	protected function hasCache($cacheKey)
@@ -960,6 +966,40 @@ abstract class dmDoctrineRecord extends sfDoctrineRecord
 		elseif(isset($this->cache[$cacheKey]))
 		{
 			unset($this->cache[$cacheKey]);
+		}
+
+		return $this;
+	}
+	
+	protected function getClassCache($cacheKey, $default = null)
+	{
+		if(isset(self::$classCache[$cacheKey]))
+		{
+			return self::$classCache[$cacheKey];
+		}
+
+		return $default;
+	}
+
+	protected function hasClassCache($cacheKey)
+	{
+		return isset(self::$classCache[$cacheKey]);
+	}
+
+	protected function setClassCache($cacheKey, $cacheValue)
+	{
+		return self::$classCache[$cacheKey] = $cacheValue;
+	}
+
+	public function clearClassCache($cacheKey = null)
+	{
+		if (null === $cacheKey)
+		{
+			self::$classCache = array();
+		}
+		elseif(isset(self::$classCache[$cacheKey]))
+		{
+			unset(self::$classCache[$cacheKey]);
 		}
 
 		return $this;

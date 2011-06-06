@@ -1,24 +1,34 @@
 <?php
 
 class dmAdminBaseGeneratedModuleActions extends dmAdminBaseActions
-{ 
+{
 	public function preExecute()
-  {
-  	parent::preExecute();
-  	
-    $this->configuration = new $this->configurationClass();
-    $this->configuration->setAction($this);
-    
-    $this->dispatcher->notify(new sfEvent($this, 'admin.pre_execute', array('configuration' => $this->configuration)));
+	{
+		parent::preExecute();
+			
+		$this->configuration = new $this->configurationClass();
+		$this->configuration->setAction($this);
 
-    $this->helper = new $this->helperClass($this->getDmModule());
-    $this->helper->setAction($this);
-    
-    $this->security_manager = $this->getDmModule()->getSecurityManager($this);
-  }
-	
-	
-	
+		$this->dispatcher->notify(new sfEvent($this, 'admin.pre_execute', array('configuration' => $this->configuration)));
+
+		$this->helper = new $this->helperClass($this->getDmModule());
+		$this->helper->setAction($this);
+
+		$this->security_manager = $this->getDmModule()->getSecurityManager($this);
+	}
+
+	public function getCredential()
+	{
+		$can = $this->getDmModule()->getSecurityManager()->userHasCredentials($this->actionName);
+
+		if(!$can)
+		{
+			return DmPermission::NEVER_GRANT_ACCESS; //we hope such credentials will never exists
+		}
+		return $can;
+	}
+
+
 	protected function getRouteArrayForAction($action, $object = null)
 	{
 		$route = array('sf_route' => $this->getDmModule()->getUnderscore(), 'action' => $action);
@@ -71,11 +81,12 @@ class dmAdminBaseGeneratedModuleActions extends dmAdminBaseActions
 	 */
 	protected function getObjectOrForward404(dmWebRequest $request, $relations = array())
 	{
-		$this->forward404Unless(
-		$this->getObject($relations),
-		sprintf('Unable to find the %s object with the following parameters "%s").', $this->getDmModule()->getModel(), str_replace("\n", '', var_export($request->getParameterHolder()->getAll(), true)))
-		);
-
+		if(!$this->object = $this->getObject($relations))
+		{
+			$this->forward404(
+			sprintf('Unable to find the %s object with the following parameters "%s").', $this->getDmModule()->getModel(), str_replace("\n", '', var_export($request->getParameterHolder()->getAll(), true)))
+			);
+		}
 		return $this->object;
 	}
 
@@ -149,9 +160,9 @@ class dmAdminBaseGeneratedModuleActions extends dmAdminBaseActions
 
 							if($foreignTable->isI18nColumn($foreignColumn))
 							{
-							  try{
-								$query->withI18n(); //leftJoin(sprintf('%s.%s %s', $joinAlias, 'Translation', $joinAlias.'Translation'));
-							  }catch(Exception $e){}
+								try{
+									$query->withI18n(); //leftJoin(sprintf('%s.%s %s', $joinAlias, 'Translation', $joinAlias.'Translation'));
+								}catch(Exception $e){}
 							}
 						}
 
@@ -293,7 +304,7 @@ class dmAdminBaseGeneratedModuleActions extends dmAdminBaseActions
 		$translationAlias = $rootAlias.'Translation';
 		$table = null === $table ? $this->getDmModule()->getTable() : $table;
 
-		$query->withI18n($this->getUser()->getCulture(), $this->getDmModule()->getModel());
+		$query->withI18n($this->getUser()->getCulture(), $table ? $table->getOption('name') : $this->getDmModule()->getModel());
 
 		foreach($searchParts as $searchPart)
 		{
@@ -853,7 +864,7 @@ class dmAdminBaseGeneratedModuleActions extends dmAdminBaseActions
 			{
 				$relation = $table->getRelation($relation);
 			}
-				
+
 			$table = dmDb::table($relation['class']);
 			$query = $table->createQuery('r');
 			if(strlen($search)>0){

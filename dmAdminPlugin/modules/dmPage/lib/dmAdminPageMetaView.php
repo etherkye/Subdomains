@@ -64,7 +64,7 @@ class dmAdminPageMetaView
 
   public function renderStringMeta($field)
   {
-    $value = $this->page[$field];
+    $value = strip_tags($this->page[$field]);
     
     if('lft' === $field)
     {
@@ -72,7 +72,7 @@ class dmAdminPageMetaView
         '<td><span style="margin-left: %dpx;" class="s16block s16_page_%s">%s</span></td>',
         $this->page['level'] * 15,
         'show' === $this->page['action'] ? 'auto' : 'manual',
-        $this->page[$field]
+        $value
       );
     }
     elseif('slug' === $field && 1 == $this->page['lft'])
@@ -87,7 +87,7 @@ class dmAdminPageMetaView
       $editType,
       $field,
       $this->clickToEditText,
-      $this->page[$field]
+      $value
     );
   }
 
