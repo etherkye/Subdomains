@@ -358,4 +358,17 @@ LIMIT 1')->getStatement();
     
     return $filesystem->getLastExec('output');
   }
+
+  public function getCulture(){
+    if ($page->get('Translation')->contains(sfConfig::get('sf_default_culture')))
+    {
+      $culture = sfConfig::get('sf_default_culture');
+    }
+    // if not exists, use the first culture...
+    else
+    {
+      $culture = dmArray::first(array_keys($page->get('Translation')->getData()));
+    }
+    return $culture;
+  }
 }

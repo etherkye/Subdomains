@@ -5,13 +5,15 @@ class dmPageRoute
   protected
   $slug,
   $page,
-  $culture;
+  $culture,
+  $subdomain;
   
-  public function __construct($slug, DmPage $page, $culture)
+  public function __construct($slug, DmPage $page, $culture, $subdomain)
   {
     $this->slug     = $slug;
     $this->page     = $page;
     $this->culture  = $culture;
+    $this->subdomain = $subdomain;
   }
   
   public function getSlug()
@@ -27,5 +29,10 @@ class dmPageRoute
   public function getCulture()
   {
     return $this->culture;
+  }
+
+  public function getSubdomain()
+  {
+    return $this->subdomain;
   }
 }
