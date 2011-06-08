@@ -30,9 +30,9 @@ class dmPageRouting extends dmConfigurable
     if($page = $this->findPageForCulture($slug, $culture,$subdomain)){
     }else if($page = $this->findPageForCulture($slug, $culture)) {
       $subdomain = $page->getSubdomain();
-    }else if($page = $this->findPageForWithoughCulture($slug,$subdomain)){
+    }else if($page = $this->findPageForWithoutCulture($slug,$subdomain)){
       $culture = $page->getCulture();
-    }else if($page = $this->findPageForWithoughCulture($slug)){
+    }else if($page = $this->findPageForWithoutCulture($slug)){
       $culture = $page->getCulture();
       $subdomain = $page->getSubdomain();
     }else{
@@ -47,7 +47,7 @@ class dmPageRouting extends dmConfigurable
     return dmDb::table('DmPage')->findOneBySlug($slug, $culture,$subdomain);
   }
 
-  protected function findPageForWithoughCulture($slug,$subdomain = null)
+  protected function findPageForWithoutCulture($slug,$subdomain = null)
   {
     $i18n = $this->serviceContainer->getService('i18n');
 
