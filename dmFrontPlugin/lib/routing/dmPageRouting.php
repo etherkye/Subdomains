@@ -27,43 +27,19 @@ class dmPageRouting extends dmConfigurable
     $culture = null === $culture ? $this->serviceContainer->getParameter('user.culture') : $culture;
     $subdomain = $domain->getSubdomain();
       //throw new dmException(sprintf('Slug: %s, Culture: %s, Subdomain %s', $slug,$culture,$domain->getSubdomain()));
-    if(!$page = $this->findPageForCulture($slug, $culture,$subdomain))
-    {
-      if($page = $this->findPageForCulture($slug, $culture))
-      {
-          $subdomain = $page->getSubdomain();
-      }else if($page = $this->findPageForSubdomain($slug,$subdomain)){
-          $culture = $page->getCulture();
-
-
-//        $result = $this->findPageAndCultureForAnotherCulture($slug,$domain->getSubdomain());
-//
-//        if (!$result)
-//        {
-//          return $this->findDefaultSubdomain($slug,$culture);
-//        }
-//
-//        list($page, $culture) = $result;
-      }
+    if($page = $this->findPageForCulture($slug, $culture,$subdomain)){
+    }else if($page = $this->findPageForCulture($slug, $culture)) {
+      $subdomain = $page->getSubdomain();
+    }else if($page = $this->findPageForWithoughCulture($slug,$subdomain)){
+      $culture = $page->getCulture();
+    }else if($page = $this->findPageForWithoughCulture($slug)){
+      $culture = $page->getCulture();
+      $subdomain = $page->getSubdomain();
+    }else{
+      return false;
     }
 
     return $this->createRoute($slug, $page, $culture, $subdomain);
-  }
-
-  private function findDefaultSubdomain($slug, $culture){
-    if(!$page = $this->findPageForCulture($slug, $culture))
-    {
-      $result = $this->findPageAndCultureForAnotherCulture($slug);
-
-      if (!$result)
-      {
-        return false;
-      }
-
-      list($page, $culture) = $result;
-    }
-
-    return $this->createRoute($slug, $page, $culture, "DEFAULT");
   }
 
   protected function findPageForCulture($slug, $culture,$subdomain = null)
@@ -71,12 +47,7 @@ class dmPageRouting extends dmConfigurable
     return dmDb::table('DmPage')->findOneBySlug($slug, $culture,$subdomain);
   }
 
-   protected function findPageForSubdomain($slug, $subdomain = null)
-  {
-    return dmDb::table('DmPage')->findOneBySlug($slug, null, $subdomain);
-  }
-
-  protected function findPageAndCultureForAnotherCulture($slug,$subdomain = null)
+  protected function findPageForWithoughCulture($slug,$subdomain = null)
   {
     $i18n = $this->serviceContainer->getService('i18n');
 
@@ -99,9 +70,7 @@ class dmPageRouting extends dmConfigurable
       return false;
     }
 
-    $culture = $page->getCulture();
-
-    return array($page, $culture);
+    return $page;
   }
 
   protected function createRoute($slug, DmPage $page, $culture, $subdomain)
