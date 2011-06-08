@@ -22,6 +22,11 @@ class dmPageNotFoundHandler
     {
       return $redirection;
     }
+    
+    if ($redirection = $this->validate($this->checkSubdomain($slug)))
+    {
+      return $redirection;
+    }
 
     if ($redirection = $this->validate($this->useSearchIndex($slug)))
     {
@@ -90,6 +95,21 @@ class dmPageNotFoundHandler
     }
   }
 
+  protected function checkSubdomain($slug)
+  {
+    $page = dmDb::query('DmPage p')
+    ->innerJoin('p.Translation t')
+    ->where('t.slug = ?', $slug);
+    $page = $page->fetchOne();
+
+    if (!$page)
+    {
+      return false;
+    }
+
+    return $this->serviceContainer->getService('helper')->link($page)->getHref();
+  }
+  
   protected function useSearchIndex($slug)
   {
     if (!dmConfig::get('smart_404'))

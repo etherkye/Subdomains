@@ -28,13 +28,8 @@ class dmPageRouting extends dmConfigurable
     $subdomain = $domain->getSubdomain();
       //throw new dmException(sprintf('Slug: %s, Culture: %s, Subdomain %s', $slug,$culture,$domain->getSubdomain()));
     if($page = $this->findPageForCulture($slug, $culture,$subdomain)){
-    }else if($page = $this->findPageForCulture($slug, $culture)) {
-      $subdomain = $page->getSubdomain();
     }else if($page = $this->findPageForWithoutCulture($slug,$subdomain)){
       $culture = $page->getCulture();
-    }else if($page = $this->findPageForWithoutCulture($slug)){
-      $culture = $page->getCulture();
-      $subdomain = $page->getSubdomain();
     }else{
       return false;
     }
