@@ -13,6 +13,7 @@ js:
     mediaBar:                 dmCoreMediaBar
     codeArea:                 dmCoreCodeArea
     ping:                     dmCorePing
+#    delayedImages:            dmCoreDelayedImages
     
   lib:
     symfony_debug:            symfony/debug

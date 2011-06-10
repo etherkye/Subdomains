@@ -105,7 +105,7 @@ class dmMediaTagImage extends dmMediaTag
       
       return $this->renderDefault();
     }
-    
+
     $tag = '<img'.$this->getHtmlAttributes().' />';
 
     return $tag;
@@ -231,6 +231,11 @@ class dmMediaTagImage extends dmMediaTag
     {
       $attributes['alt'] = $media->get('legend');
     }
+
+//    if(sfConfig::get('dm_performance_delay_images')){
+//        $attributes['delayedsrc'] = $attributes['src'];
+//        $attributes['src'] = sfConfig::get('dm_performance_default_image')?sfConfig::get('dm_performance_default_image'):'#';
+//    }
 
     return $attributes;
   }

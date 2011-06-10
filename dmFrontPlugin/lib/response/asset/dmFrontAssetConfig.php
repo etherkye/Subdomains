@@ -66,6 +66,7 @@ class dmFrontAssetConfig extends dmAssetConfig
         'core.toolBar',
         'core.pageBar',
         'core.mediaBar',
+//        'core.delayedImages',
         'front.ctrl',
         'front.editCtrl',
         'front.form',
@@ -87,6 +88,7 @@ class dmFrontAssetConfig extends dmAssetConfig
       'core.config',
       'core.plugins',
       'core.ctrl',
+//      'core.delayedImages',
       'front.ctrl'
     );
   }
