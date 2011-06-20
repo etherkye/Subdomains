@@ -6,6 +6,8 @@ class dmMediaSynchronizer
   $filesystem,
   $folderTable,
   $mediaTable,
+  $cdnSettings,
+  $cdnIncrements,
   $ignore = array('.', '..', '.thumbs', '.svn', '_svn', 'CVS', '_darcs', '.arch-params', '.monotone', '.bzr', '.git', '.hg');
 
   public function __construct(dmFilesystem $filesystem)
@@ -14,9 +16,15 @@ class dmMediaSynchronizer
 
     $this->folderTable  = dmDb::table('DmMediaFolder');
     $this->mediaTable   = dmDb::table('DmMedia');
+
+    $this->cdnSettings = array("default" => array_merge(array('number' => 2), sfConfig::get('dm_cdn_default',array())));
+    if(isset($this->cdnSettings['default']['list'])){
+      $this->cdnSettings['default']['number'] = count($settings['default']['list']);
+    }
+    $this->cdnIncrements = array();
   }
 
-  public function execute(DmMediaFolder $folder, $depth = 99)
+  public function execute(DmMediaFolder $folder, $depth = 99, $cdn = false)
   {
     if($depth < 1)
     {
@@ -37,9 +45,10 @@ class dmMediaSynchronizer
     $children = $folder->getSubfoldersByName();
 
     $dirty = false;
-
+    
     /*
      * 1. Add new files to the medias
+     * Also now redoes the CDN network.
      */
     foreach($files as $file)
     {
@@ -48,7 +57,7 @@ class dmMediaSynchronizer
       if (!array_key_exists($fileBasename, $medias))
       {
         // File exists, media does not exist: create media
-        $this->mediaTable->create(array(
+        $media = $this->mediaTable->create(array(
           'dm_media_folder_id' => $folder->get('id'),
           'file' => $fileBasename
         ))->save();
@@ -57,9 +66,31 @@ class dmMediaSynchronizer
       }
       else
       {
+        $media = $medias[$fileBasename];
         // File exists, media exists: do nothing
         unset($medias[$fileBasename]);
       }
+
+      if($cdn){
+        /*
+         * Loads CDN data for mime type if it's not already set
+         */
+        if(!isset($this->cdnIncrements[$media->get('mime')])){
+          $this->cdnIncrements[$media->get('mime')] = -1;
+          $this->cdnSettings[$media->get('mime')] = array_merge($this->cdnSettings['default'],sfConfig::get('dm_cdn_'.$media->get('mime'),array()));
+          if(isset($this->cdnSettings[$media->get('mime')]['list'])){
+            $this->cdnSettings[$media->get('mime')]['number'] = count($this->cdnSettings[$media->get('mime')]['list']);
+          }
+        }
+        /*
+         * Sets the CDN data for that mime type.
+         */
+        $this->cdnIncrements[$media->get('mime')] = ($this->cdnIncrements[$media->get('mime')]+1)%$this->cdnSettings[$media->get('mime')]['number'];
+        $media->setCdn($this->cdnIncrements[$media->get('mime')]);
+        $media->save();
+        $media->free();
+      }
+      unset($media); 
     }
 
     /*
@@ -121,7 +152,7 @@ class dmMediaSynchronizer
         unset($children[$dirName]);
       }
 
-      $this->execute($child, $depth - 1);
+      $this->execute($child, $depth - 1,$cdn);
     }
 
     /*

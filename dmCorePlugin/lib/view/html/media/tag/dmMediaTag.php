@@ -5,13 +5,15 @@ abstract class dmMediaTag extends dmHtmlTag
   protected
   $resource,
   $context,
+  $serviceContainer,
   $stylesheets = array(),
   $javascripts = array();
 
-  public function __construct(dmMediaResource $resource, dmContext $context, array $options = array())
+  public function __construct(dmMediaResource $resource, dmContext $context, dmBaseServiceContainer $serviceContainer, array $options = array())
   {
     $this->resource         = $resource;
     $this->context          = $context;
+    $this->serviceContainer = $serviceContainer;
     
     $this->initialize($options);
   }
@@ -86,6 +88,33 @@ abstract class dmMediaTag extends dmHtmlTag
     $attributes['src'] = $this->resource->getWebPath();
 
     return $attributes;
+  }
+
+  protected function convertAttributesToHtml(array $attributes){
+
+    $media = $this->resource->getSource();
+
+    if ($media instanceof DmMedia)
+    {
+      $domain = $this->serviceContainer->getService('domain');
+      $settings = array_merge(
+                      array('enabled' => false, 'number' => 2, 'name'=> 'cdn', 'start' => 1),
+                      sfConfig::get('dm_cdn_default',array()),
+                      sfConfig::get('dm_cdn_'.$media->get('mime'),array())
+                  );
+
+      if(isset($settings['enabled']) && $settings['enabled']){
+        if(isset($settings['list']) && isset($settings['list'][$media->get('cdn')])){
+            $cdn = $settings['list'][$media->get('cdn')];
+        }else{
+            $cdn = $settings['name'].($media->get('cdn') + $settings['start']);
+        }  
+        $attributes['src'] = $domain->returnLink('',$attributes['src'],$cdn,true);
+      }
+    }
+
+    $htmlAttributesString = parent::convertAttributesToHtml($attributes);
+    return $htmlAttributesString;
   }
 
   protected function hasSize()

@@ -276,7 +276,7 @@ class dmDataLoad
 
   protected function loadMedia()
   {
-    dmDb::table('DmMediaFolder')->checkRoot()->sync();
+    dmDb::table('DmMediaFolder')->checkRoot()->sync(99,true);
   }
 
   protected function loadUsers()

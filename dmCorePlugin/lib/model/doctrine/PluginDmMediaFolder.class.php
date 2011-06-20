@@ -299,9 +299,9 @@ abstract class PluginDmMediaFolder extends BaseDmMediaFolder
     return $this;
   }
 
-  public function sync($depth = 99)
+  public function sync($depth = 99,$cdn = false)
   {
-    return $this->getService('media_synchronizer')->execute($this, $depth);
+    return $this->getService('media_synchronizer')->execute($this, $depth, $cdn);
   }
 
   /**

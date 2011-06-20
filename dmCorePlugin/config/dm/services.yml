@@ -270,22 +270,22 @@ services:
   media_tag_image:
     class:                    %media_tag_image.class%
     shared:                   false
-    arguments:                [ %media_tag.source%, @context, %media_tag_image.options% ]
+    arguments:                [ %media_tag.source%, @context, @service_container, %media_tag_image.options% ]
 
   media_tag_application:
     class:                    %media_tag_application.class%
     shared:                   false
-    arguments:                [ %media_tag.source%, @context, %media_tag_application.options% ]
+    arguments:                [ %media_tag.source%, @context, @service_container, %media_tag_application.options% ]
 
   media_tag_video:
     class:                    %media_tag_video.class%
     shared:                   false
-    arguments:                [ %media_tag.source%, @context, %media_tag_video.options% ]
+    arguments:                [ %media_tag.source%, @context, @service_container, %media_tag_video.options% ]
 
   media_tag_audio:
     class:                    %media_tag_audio.class%
     shared:                   false
-    arguments:                [ %media_tag.source%, @context, %media_tag_audio.options% ]
+    arguments:                [ %media_tag.source%, @context, @service_container, %media_tag_audio.options% ]
 
   media_resource:
     class:                    %media_resource.class%
