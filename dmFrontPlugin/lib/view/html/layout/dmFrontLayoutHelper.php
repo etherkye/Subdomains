@@ -139,4 +139,137 @@ _gaq.push(['_setAccount', '".$gaKey."']);".
 </script>";
       return $html;
   }
+
+  public function renderStylesheets()
+  {
+    $settings = array_merge(
+                      array('enabled' => false, 'number' => 2, 'name'=> 'cdn', 'start' => 1),
+                      sfConfig::get('dm_cdn_default',array()),
+                      sfConfig::get('dm_cdn_css',array())
+                  );
+    if(isset($settings['enabled']) && $settings['enabled']){
+      /*
+       * Allow listeners of dm.layout.filter_stylesheets event
+       * to filter and modify the stylesheets list
+       */
+      $stylesheets = $this->dispatcher->filter(
+      new sfEvent($this, 'dm.layout.filter_stylesheets'),
+      $this->getService('response')->getStylesheets()
+      )->getReturnValue();
+
+      $relativeUrlRoot = dmArray::get($this->serviceContainer->getParameter('request.context'), 'relative_url_root');
+
+      $domain = $this->serviceContainer->getService('domain');
+
+      if(!isset($settings['list'])){
+        $settings['list'] = array();
+          for($i=0;$i<$settings['number'];$i++){
+            $settings['list'][] = $settings['name'].($i+$settings['start']);
+          }
+      }
+      $i = 0;
+
+      $html = '';
+      foreach ($stylesheets as $file => $options)
+      {
+          $stylesheetTag = '<link rel="stylesheet" type="text/css" media="'.dmArray::get($options, 'media', 'all').'" href="'.
+                  ($file{0} === '/' ? $domain->returnLink('',$relativeUrlRoot.$file,$settings['list'][$i],true) : $file) .
+                          '" />';
+          $i = ($i+1)%count($settings['list']);
+          if (isset($options['condition']))
+          {
+                  $stylesheetTag = sprintf('<!--[if %s]>%s<![endif]-->', $options['condition'], $stylesheetTag);
+          }
+
+          $html .= $stylesheetTag."\n";
+      }
+
+      sfConfig::set('symfony.asset.stylesheets_included', true);
+
+      return $html;
+    }else{
+      return parent::renderStylesheets();
+    }
+  }
+
+  protected function renderJavascriptsIncludes()
+  {
+    $settings = array_merge(
+                  array('enabled' => false, 'number' => 2, 'name'=> 'cdn', 'start' => 1),
+                  sfConfig::get('dm_cdn_default',array()),
+                  sfConfig::get('dm_cdn_js',array())
+              );
+    if(isset($settings['enabled']) && $settings['enabled']){
+      /*
+       * Allow listeners of dm.layout.filter_javascripts event
+       * to filter and modify the javascripts list
+       */
+      $javascripts = $this->dispatcher->filter(
+      new sfEvent($this, 'dm.layout.filter_javascripts'),
+      $this->serviceContainer->getService('response')->getJavascripts()
+      )->getReturnValue();
+
+      sfConfig::set('symfony.asset.javascripts_included', true);
+
+      $relativeUrlRoot = dmArray::get($this->serviceContainer->getParameter('request.context'), 'relative_url_root');
+
+      $domain = $this->serviceContainer->getService('domain');
+
+      if(!isset($settings['list'])){
+        $settings['list'] = array();
+          for($i=0;$i<$settings['number'];$i++){
+            $settings['list'][] = $settings['name'].($i+$settings['start']);
+          }
+      }
+      $i = 0;
+
+      $html = '';
+      foreach ($javascripts as $file => $options)
+      {
+        if(empty($options['head_inclusion']))
+        {
+          $scriptTag = '<script type="text/javascript" src="'.
+                  ($file{0} === '/' ? $domain->returnLink('',$relativeUrlRoot.$file,$settings['list'][$i],true) : $file) .
+                          '"></script>';
+          $i = ($i+1)%count($settings['list']);
+
+          if (isset($options['condition'])) {
+                  $scriptTag = sprintf('<!--[if %s]>%s<![endif]-->', $options['condition'], $scriptTag);
+          }
+          $html .= $scriptTag;
+        }
+      }
+
+      return $html;
+    }else{
+      return parent::renderJavascriptsIncludes();
+    }
+  }
+
+  public function renderFavicon()
+  {
+    $settings = array_merge(
+                      array('enabled' => false, 'number' => 2, 'name'=> 'cdn', 'start' => 1),
+                      sfConfig::get('dm_cdn_default',array()),
+                      sfConfig::get('dm_cdn_image/x-icon',array()),
+                      sfConfig::get('dm_cdn_ico',array())
+                  );
+    if(isset($settings['enabled']) && $settings['enabled']){
+      $domain = $this->serviceContainer->getService('domain');
+      $favicon = $this->getFavicon();
+
+      if ($favicon)
+      {
+        return sprintf('<link rel="shortcut icon" href="%s" type="%s" />',
+              $domain->returnLink('',$favicon,(isset($settings['list'])?$settings['list'][0]:($settings['name'].$settings['start'])),true),
+              'image/x-icon'
+              )."\n";
+      }
+
+      return '';
+    }else{
+      return parent::renderFavicon();
+    }
+  }
+
 }
