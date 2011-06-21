@@ -94,7 +94,7 @@ abstract class dmMediaTag extends dmHtmlTag
 
     $media = $this->resource->getSource();
 
-    if ($media instanceof DmMedia)
+    if ($media instanceof DmMedia && isset($attributes['src']))
     {
       $domain = $this->serviceContainer->getService('domain');
       $settings = array_merge(
