@@ -41,7 +41,9 @@ class dmFrontLayoutHelper extends dmCoreLayoutHelper
       'title'        => dmConfig::get('title_prefix').$this->page->get('title').dmConfig::get('title_suffix')
     );
 
-    if(!$this->isHTML5()){
+
+    if(!$this->isHTML5())
+    {
       $metas['language'] = $this->serviceContainer->getParameter('user.culture');
     }
     
