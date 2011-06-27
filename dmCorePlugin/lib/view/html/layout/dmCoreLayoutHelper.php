@@ -142,7 +142,7 @@ class dmCoreLayoutHelper extends dmConfigurable
 	{
 		$httpMetas = $this->getService('response')->getHttpMetas();
 
-		$html = '<!--[if lt IE9]><![endif]-->';
+		$html = '<!--[if lt IE 9]> <![endif]-->';
 
 		foreach($httpMetas as $httpequiv => $value)
 		{
