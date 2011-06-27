@@ -71,7 +71,7 @@ class dmMediaSynchronizer
         unset($medias[$fileBasename]);
       }
 
-      if($cdn){
+      if(is_object($media) && $cdn){
         /*
          * Loads CDN data for mime type if it's not already set
          */
