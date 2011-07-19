@@ -62,12 +62,12 @@ class dmChartActions extends dmAdminBaseActions
     $this->getServiceContainer()->mergeParameter($serviceName.'.options', $options);
     
     $this->chart = $this->getService($serviceName);
-    
+
     if (!$this->chart->isAvailable())
     {
       return false;
     }
-    
+
     try
     {
       $this->image = $this->chart->getImage();
