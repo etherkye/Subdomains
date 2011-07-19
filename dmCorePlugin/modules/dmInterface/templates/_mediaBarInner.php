@@ -27,8 +27,14 @@ else
 
 if ($folders = $folder->getNode()->getChildren())
 {
-  foreach($folders as $f)
-  {
+  $arrFolders = array();
+  foreach($folders as $f)  {
+    $arrFolders[$f->getName()] = $f;
+  }
+
+  ksort($arrFolders);
+
+  foreach($arrFolders as $f) {
     echo _tag("li.folder#dmf".$f->get('id'),
       ($f->isWritable() ? _media('dmCore/images/media/folder.png')->size(64, 64)
       : _media('dmCore/images/media/folder-locked.png')->size(64, 64)).

@@ -32,8 +32,14 @@ else
 
 if ($children = $folder->getNode()->getChildren())
 {
-  foreach($children as $f)
-  {
+  $arrChildred = array();
+  foreach($children as $f)  {
+    $arrChildred[$f->getName()] = $f;
+  }
+
+  ksort($arrChildred);
+
+  foreach($arrChildred as $f){
     echo _tag('li.folder',
       _link($sf_context->getRouting()->getMediaUrl($f))->text(
         ($f->isWritable() ? _media('dmAdmin/images/media/folder.png')->size(64, 64)
