@@ -115,8 +115,6 @@ class dmAdminLinkTag extends dmBaseLinkTag
 
                 $resource = $this->serviceContainer->getService('domain')->returnLink($prefix, $slug, $subdomain);
             } elseif ($resource{0} === '/') {
-                $resource = $resource;
-
                 /*
                  * add relativeUrlRoot to absolute resource
                  */
@@ -156,7 +154,6 @@ class dmAdminLinkTag extends dmBaseLinkTag
                 return $this->serviceContainer->getService('controller')->genUrl($resource);
             }
         }
-
 
         throw new dmException('Can not find href for ' . $this->resource);
     }
