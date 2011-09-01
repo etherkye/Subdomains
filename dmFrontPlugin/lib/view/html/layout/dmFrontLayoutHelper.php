@@ -127,22 +127,22 @@ class dmFrontLayoutHelper extends dmCoreLayoutHelper
   {
       $domain = $this->getService('domain');
       $html =
-     "<script type=\"text/javascript\">
-var _gaq = _gaq || [];
-_gaq.push(['_setAccount', '".$gaKey."']);".
-($domain->hasSubdomains()?"
-   _gaq.push(['_setDomainName','.".$domain->getDomain()."']);
-   _gaq.push(['_setAllowHash',false]);
-  ":"").
-  "_gaq.push(['_trackPageview']);
-   _gaq.push(['_trackPageLoadTime']);
+     "<script type=\"text/javascript\">".
+"var _gaq = _gaq || [];".
+"_gaq.push(['_setAccount', '".$gaKey."']);".
+($domain->hasSubdomains()?
+   "_gaq.push(['_setDomainName','.".$domain->getDomain()."']);".
+   "_gaq.push(['_setAllowHash',false]);"
+  :"").
+  "_gaq.push(['_trackPageview']);".
+   "_gaq.push(['_trackPageLoadTime']);".
 
-(function() {
-  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);
-})();
-</script>";
+"(function() {".
+  "var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;".
+  "ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';".
+  "(document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(ga);".
+"})();".
+"</script>";
       return $html;
   }
 
