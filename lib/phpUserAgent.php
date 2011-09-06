@@ -193,4 +193,24 @@ class phpUserAgent
     $this->setOperatingSystem($data['operating_system']);
     $this->setEngine($data['engine']);
   }
+  
+  /**
+   * Returns true if user agent is a know bot/crawler
+   * 
+   * @return boolean
+   */
+  public function isBot()
+  {
+  	return in_array($this->getBrowserName(), $this->getKnownBots());
+  }
+  
+  /**
+   * Returns an array of strings identifying know bots
+   * 
+   * @return array
+   */
+  public function getKnownBots()
+  {
+  	return array('googlebot');
+  }
 }
