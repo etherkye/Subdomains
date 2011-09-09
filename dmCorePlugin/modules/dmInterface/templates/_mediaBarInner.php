@@ -28,7 +28,9 @@ else
 if ($folders = $folder->getNode()->getChildren())
 {
   $arrFolders = array();
-  foreach($folders as $f)  {
+
+  foreach($folders as $f) {
+
     $arrFolders[$f->getName()] = $f;
   }
 
