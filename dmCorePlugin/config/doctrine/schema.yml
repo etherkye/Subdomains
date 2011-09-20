@@ -10,7 +10,7 @@ DmPage:
     module:                 { type: string(127), notnull: true }
     action:                 { type: string(127), notnull: true }
     record_id:              { type: integer, unsigned: true, notnull: true, default: 0 }
-    slug:                   { type: string(255), notnull: true }
+    slug:                   { type: string(255), notnull: false }
     name:                   { type: string(255), notnull: true }
     title:                  { type: string(255), notnull: false }
     h1:                     { type: string(255), notnull: false }
