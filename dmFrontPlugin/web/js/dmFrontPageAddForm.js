@@ -20,7 +20,7 @@
       
       self.$parent = $('select#dm_page_front_new_form_parent_id', self.element);
       
-      self.$slug = $('input#dm_page_front_new_form_slug', self.element).attr('disabled', self.autoSlug);
+      self.$slug = $('input#dm_page_front_new_form_slug', self.element).prop('disabled', self.autoSlug);
 
       self.parentSlugs = $.parseJSON($('div.parent_slugs', self.element).text());
       self.transliteration = $.extend(
