@@ -20,7 +20,7 @@ abstract class BaseDmAreaFormFilter extends BaseFormFilterDoctrine
 		}
 		if($this->needsWidget('type')){
 			$this->setWidget('type', new sfWidgetFormDmFilterInput());
-			$this->setValidator('type', new sfValidatorString(array('required' => false)));
+			$this->setValidator('type', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 
 

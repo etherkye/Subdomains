@@ -20,23 +20,23 @@ abstract class BaseDmRecordPermissionFormFilter extends BaseFormFilterDoctrine
 		}
 		if($this->needsWidget('secure_module')){
 			$this->setWidget('secure_module', new sfWidgetFormDmFilterInput());
-			$this->setValidator('secure_module', new sfValidatorString(array('required' => false)));
+			$this->setValidator('secure_module', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('secure_action')){
 			$this->setWidget('secure_action', new sfWidgetFormDmFilterInput());
-			$this->setValidator('secure_action', new sfValidatorString(array('required' => false)));
+			$this->setValidator('secure_action', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('secure_model')){
 			$this->setWidget('secure_model', new sfWidgetFormDmFilterInput());
-			$this->setValidator('secure_model', new sfValidatorString(array('required' => false)));
+			$this->setValidator('secure_model', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('secure_record')){
 			$this->setWidget('secure_record', new sfWidgetFormDmFilterInput());
-			$this->setValidator('secure_record', new sfValidatorInteger(array('required' => false)));
+			$this->setValidator('secure_record', new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))));
 		}
 		if($this->needsWidget('description')){
 			$this->setWidget('description', new sfWidgetFormDmFilterInput());
-			$this->setValidator('description', new sfValidatorString(array('required' => false)));
+			$this->setValidator('description', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 
 		if($this->needsWidget('users_list')){

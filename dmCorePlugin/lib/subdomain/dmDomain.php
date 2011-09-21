@@ -14,8 +14,10 @@ class dmDomain extends dmConfigurable {
         $this->domain = dmConfig::get('site_url');
         if (empty($this->domain)) {
             $this->domain = $this->generateDomain($_SERVER['SERVER_NAME']);
+            $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
+        }else{
+          $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
         }
-        $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
 
         $this->configure($options);
     }
@@ -86,6 +88,7 @@ class dmDomain extends dmConfigurable {
         if(empty($domainb)){
             return '';
         }
+        
         $bits = explode($domain, $domainb);
         return trim($bits[0], '.');
     }

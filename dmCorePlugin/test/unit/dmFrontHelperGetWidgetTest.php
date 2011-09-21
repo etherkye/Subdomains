@@ -12,7 +12,7 @@ $title = dm_get_widget('dmWidgetContent', 'title', array(
   'tag'  => 'h1',
   'text' => 'The title text'
 ));
-$expected = '<div class="dm_widget content_title"><div class="dm_widget_inner"><h1 class="">The title text</h1></div></div>';
+$expected = '<div class="dm_widget content_title"><div class="dm_widget_inner"><h1>The title text</h1></div></div>';
 
 $t->is($title, $expected, 'rendered title H1');
 
@@ -21,7 +21,7 @@ $title = dm_get_widget('dmWidgetContent', 'title', array(
   'text' => 'The title text',
   'css_class' => 'custom_class'
 ));
-$expected = '<div class="dm_widget content_title"><div class="dm_widget_inner"><h2 class="custom_class">The title text</h2></div></div>';
+$expected = '<div class="dm_widget content_title custom_class"><div class="dm_widget_inner"><h2>The title text</h2></div></div>';
 
 $t->is($title, $expected, 'rendered title H2 with CSS class');
 

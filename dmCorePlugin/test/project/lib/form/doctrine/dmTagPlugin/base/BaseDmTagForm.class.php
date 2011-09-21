@@ -99,22 +99,22 @@ abstract class BaseDmTagForm extends BaseFormDoctrine
 
     if (isset($this->widgetSchema['dm_test_fruits_list']))
     {
-      $this->setDefault('dm_test_fruits_list', $this->object->DmTestFruits->getPrimaryKeys());
+        $this->setDefault('dm_test_fruits_list', array_merge((array)$this->getDefault('dm_test_fruits_list'),$this->object->DmTestFruits->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['dm_test_domains_list']))
     {
-      $this->setDefault('dm_test_domains_list', $this->object->DmTestDomains->getPrimaryKeys());
+        $this->setDefault('dm_test_domains_list', array_merge((array)$this->getDefault('dm_test_domains_list'),$this->object->DmTestDomains->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['dm_test_fruit_dm_tag_list']))
     {
-      $this->setDefault('dm_test_fruit_dm_tag_list', $this->object->DmTestFruitDmTag->getPrimaryKeys());
+        $this->setDefault('dm_test_fruit_dm_tag_list', array_merge((array)$this->getDefault('dm_test_fruit_dm_tag_list'),$this->object->DmTestFruitDmTag->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['dm_test_domain_dm_tag_list']))
     {
-      $this->setDefault('dm_test_domain_dm_tag_list', $this->object->DmTestDomainDmTag->getPrimaryKeys());
+        $this->setDefault('dm_test_domain_dm_tag_list', array_merge((array)$this->getDefault('dm_test_domain_dm_tag_list'),$this->object->DmTestDomainDmTag->getPrimaryKeys()));
     }
 
   }

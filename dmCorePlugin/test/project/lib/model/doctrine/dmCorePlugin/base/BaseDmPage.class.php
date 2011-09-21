@@ -80,7 +80,7 @@ abstract class BaseDmPage extends myDoctrineRecord
              ));
         $this->hasColumn('slug', 'string', 255, array(
              'type' => 'string',
-             'notnull' => true,
+             'notnull' => false,
              'length' => 255,
              ));
         $this->hasColumn('name', 'string', 255, array(

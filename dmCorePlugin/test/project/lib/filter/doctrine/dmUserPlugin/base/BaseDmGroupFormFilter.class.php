@@ -20,11 +20,11 @@ abstract class BaseDmGroupFormFilter extends BaseFormFilterDoctrine
 		}
 		if($this->needsWidget('name')){
 			$this->setWidget('name', new sfWidgetFormDmFilterInput());
-			$this->setValidator('name', new sfValidatorString(array('required' => false)));
+			$this->setValidator('name', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('description')){
 			$this->setWidget('description', new sfWidgetFormDmFilterInput());
-			$this->setValidator('description', new sfValidatorString(array('required' => false)));
+			$this->setValidator('description', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('created_at')){
 			$this->setWidget('created_at', new sfWidgetFormChoice(array('choices' => array(

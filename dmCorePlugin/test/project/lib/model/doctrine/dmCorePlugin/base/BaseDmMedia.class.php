@@ -13,6 +13,7 @@
  * @property string $mime
  * @property integer $size
  * @property string $dimensions
+ * @property integer $cdn
  * @property DmMediaFolder $Folder
  * @property Doctrine_Collection $DmTestUser
  * @property Doctrine_Collection $DmTestPost
@@ -25,6 +26,7 @@
  * @method string              getMime()               Returns the current record's "mime" value
  * @method integer             getSize()               Returns the current record's "size" value
  * @method string              getDimensions()         Returns the current record's "dimensions" value
+ * @method integer             getCdn()                Returns the current record's "cdn" value
  * @method DmMediaFolder       getFolder()             Returns the current record's "Folder" value
  * @method Doctrine_Collection getDmTestUser()         Returns the current record's "DmTestUser" collection
  * @method Doctrine_Collection getDmTestPost()         Returns the current record's "DmTestPost" collection
@@ -36,6 +38,7 @@
  * @method DmMedia             setMime()               Sets the current record's "mime" value
  * @method DmMedia             setSize()               Sets the current record's "size" value
  * @method DmMedia             setDimensions()         Sets the current record's "dimensions" value
+ * @method DmMedia             setCdn()                Sets the current record's "cdn" value
  * @method DmMedia             setFolder()             Sets the current record's "Folder" value
  * @method DmMedia             setDmTestUser()         Sets the current record's "DmTestUser" collection
  * @method DmMedia             setDmTestPost()         Sets the current record's "DmTestPost" collection
@@ -71,10 +74,10 @@ abstract class BaseDmMedia extends myDoctrineRecord
              'type' => 'string',
              'length' => 255,
              ));
-        $this->hasColumn('mime', 'string', 63, array(
+        $this->hasColumn('mime', 'string', 128, array(
              'type' => 'string',
              'notnull' => true,
-             'length' => 63,
+             'length' => 128,
              ));
         $this->hasColumn('size', 'integer', 4, array(
              'type' => 'integer',
@@ -84,6 +87,10 @@ abstract class BaseDmMedia extends myDoctrineRecord
         $this->hasColumn('dimensions', 'string', 15, array(
              'type' => 'string',
              'length' => 15,
+             ));
+        $this->hasColumn('cdn', 'integer', 4, array(
+             'type' => 'integer',
+             'length' => 4,
              ));
 
 

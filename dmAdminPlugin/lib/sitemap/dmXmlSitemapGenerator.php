@@ -23,18 +23,18 @@ class dmXmlSitemapGenerator extends dmConfigurable
   protected function initialize(array $options) {
         $this->domain = $this->serviceContainer->getService('domain');
         if(strlen($this->getOption('domain')) > 2){
-            $this->domain = $this->domain->setDomain($this->getOption('domain'));
+            $this->setDomain();
         }
         $this->notIn = sfConfig::has('app_sitemap_not_in')?sfConfig::get('app_sitemap_not_in'):array();
         $this->configure($options);
     }
+
   /*
    * Generates a sitemap
    * and save it in fullPath
    */
     public function execute() {
         $this->checkBaseUrl();
-
 
         if ($this->i18n->hasManyCultures()) {
             $this->write('sitemap.xml', $this->getCultureIndexXml($this->i18n->getCultures()));
@@ -263,6 +263,9 @@ class dmXmlSitemapGenerator extends dmConfigurable
     if (!$this->getOption('domain'))
     {
       throw new dmException('You must give a domain option like www.my-domain.com');
+    }else{
+      $this->domain = $this->domain->setDomain($this->getOption('domain'));
+      dmConfig::set('site_subdomain_default',$this->domain->getSubdomain());
     }
   }
 }

@@ -20,23 +20,23 @@ abstract class BaseDmUserFormFilter extends BaseFormFilterDoctrine
 		}
 		if($this->needsWidget('username')){
 			$this->setWidget('username', new sfWidgetFormDmFilterInput());
-			$this->setValidator('username', new sfValidatorString(array('required' => false)));
+			$this->setValidator('username', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('email')){
 			$this->setWidget('email', new sfWidgetFormDmFilterInput());
-			$this->setValidator('email', new sfValidatorString(array('required' => false)));
+			$this->setValidator('email', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('algorithm')){
 			$this->setWidget('algorithm', new sfWidgetFormDmFilterInput());
-			$this->setValidator('algorithm', new sfValidatorString(array('required' => false)));
+			$this->setValidator('algorithm', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('salt')){
 			$this->setWidget('salt', new sfWidgetFormDmFilterInput());
-			$this->setValidator('salt', new sfValidatorString(array('required' => false)));
+			$this->setValidator('salt', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('password')){
 			$this->setWidget('password', new sfWidgetFormDmFilterInput());
-			$this->setValidator('password', new sfValidatorString(array('required' => false)));
+			$this->setValidator('password', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('is_active')){
 			$this->setWidget('is_active', new sfWidgetFormChoice(array('choices' => array('' => $this->getI18n()->__('yes or no', array(), 'dm'), 1 => $this->getI18n()->__('yes', array(), 'dm'), 0 => $this->getI18n()->__('no', array(), 'dm')))));
@@ -58,7 +58,7 @@ abstract class BaseDmUserFormFilter extends BaseFormFilterDoctrine
 		}
 		if($this->needsWidget('forgot_password_code')){
 			$this->setWidget('forgot_password_code', new sfWidgetFormDmFilterInput());
-			$this->setValidator('forgot_password_code', new sfValidatorString(array('required' => false)));
+			$this->setValidator('forgot_password_code', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('created_at')){
 			$this->setWidget('created_at', new sfWidgetFormChoice(array('choices' => array(

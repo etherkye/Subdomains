@@ -40,7 +40,7 @@ abstract class BaseDmTestCategFormFilter extends BaseFormFilterDoctrine
 		}
 		if($this->needsWidget('position')){
 			$this->setWidget('position', new sfWidgetFormDmFilterInput());
-			$this->setValidator('position', new sfValidatorInteger(array('required' => false)));
+			$this->setValidator('position', new sfValidatorSchemaFilter('text', new sfValidatorInteger(array('required' => false))));
 		}
 
 		if($this->needsWidget('domains_list')){

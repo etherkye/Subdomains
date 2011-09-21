@@ -20,7 +20,7 @@ abstract class BaseDmTagFormFilter extends BaseFormFilterDoctrine
 		}
 		if($this->needsWidget('name')){
 			$this->setWidget('name', new sfWidgetFormDmFilterInput());
-			$this->setValidator('name', new sfValidatorString(array('required' => false)));
+			$this->setValidator('name', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 
 		if($this->needsWidget('dm_test_fruits_list')){

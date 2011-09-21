@@ -20,7 +20,7 @@ abstract class BaseDmPageTranslationForm extends BaseFormDoctrine
 		//column
 		if($this->needsWidget('slug')){
 			$this->setWidget('slug', new sfWidgetFormInputText());
-			$this->setValidator('slug', new sfValidatorString(array('max_length' => 255)));
+			$this->setValidator('slug', new sfValidatorString(array('max_length' => 255, 'required' => false)));
 		}
 		//column
 		if($this->needsWidget('name')){

@@ -20,15 +20,15 @@ abstract class BaseDmLayoutFormFilter extends BaseFormFilterDoctrine
 		}
 		if($this->needsWidget('name')){
 			$this->setWidget('name', new sfWidgetFormDmFilterInput());
-			$this->setValidator('name', new sfValidatorString(array('required' => false)));
+			$this->setValidator('name', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('template')){
 			$this->setWidget('template', new sfWidgetFormDmFilterInput());
-			$this->setValidator('template', new sfValidatorString(array('required' => false)));
+			$this->setValidator('template', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('css_class')){
 			$this->setWidget('css_class', new sfWidgetFormDmFilterInput());
-			$this->setValidator('css_class', new sfValidatorString(array('required' => false)));
+			$this->setValidator('css_class', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 
 

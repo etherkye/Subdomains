@@ -208,77 +208,77 @@ abstract class BaseDmUserForm extends BaseFormDoctrine
 
     if (isset($this->widgetSchema['groups_list']))
     {
-      $this->setDefault('groups_list', $this->object->Groups->getPrimaryKeys());
+        $this->setDefault('groups_list', array_merge((array)$this->getDefault('groups_list'),$this->object->Groups->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['permissions_list']))
     {
-      $this->setDefault('permissions_list', $this->object->Permissions->getPrimaryKeys());
+        $this->setDefault('permissions_list', array_merge((array)$this->getDefault('permissions_list'),$this->object->Permissions->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['records_list']))
     {
-      $this->setDefault('records_list', $this->object->Records->getPrimaryKeys());
+        $this->setDefault('records_list', array_merge((array)$this->getDefault('records_list'),$this->object->Records->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['records_permissions_associations_list']))
     {
-      $this->setDefault('records_permissions_associations_list', $this->object->RecordsPermissionsAssociations->getPrimaryKeys());
+        $this->setDefault('records_permissions_associations_list', array_merge((array)$this->getDefault('records_permissions_associations_list'),$this->object->RecordsPermissionsAssociations->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['dm_lock_list']))
     {
-      $this->setDefault('dm_lock_list', $this->object->DmLock->getPrimaryKeys());
+        $this->setDefault('dm_lock_list', array_merge((array)$this->getDefault('dm_lock_list'),$this->object->DmLock->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['posts_list']))
     {
-      $this->setDefault('posts_list', $this->object->Posts->getPrimaryKeys());
+        $this->setDefault('posts_list', array_merge((array)$this->getDefault('posts_list'),$this->object->Posts->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['dm_test_posts_list']))
     {
-      $this->setDefault('dm_test_posts_list', $this->object->DmTestPosts->getPrimaryKeys());
+        $this->setDefault('dm_test_posts_list', array_merge((array)$this->getDefault('dm_test_posts_list'),$this->object->DmTestPosts->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['created_dm_test_fruits_list']))
     {
-      $this->setDefault('created_dm_test_fruits_list', $this->object->CreatedDmTestFruits->getPrimaryKeys());
+        $this->setDefault('created_dm_test_fruits_list', array_merge((array)$this->getDefault('created_dm_test_fruits_list'),$this->object->CreatedDmTestFruits->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['updated_dm_test_fruits_list']))
     {
-      $this->setDefault('updated_dm_test_fruits_list', $this->object->UpdatedDmTestFruits->getPrimaryKeys());
+        $this->setDefault('updated_dm_test_fruits_list', array_merge((array)$this->getDefault('updated_dm_test_fruits_list'),$this->object->UpdatedDmTestFruits->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['created_dm_test_domain_translations_list']))
     {
-      $this->setDefault('created_dm_test_domain_translations_list', $this->object->CreatedDmTestDomainTranslations->getPrimaryKeys());
+        $this->setDefault('created_dm_test_domain_translations_list', array_merge((array)$this->getDefault('created_dm_test_domain_translations_list'),$this->object->CreatedDmTestDomainTranslations->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['updated_dm_test_domain_translations_list']))
     {
-      $this->setDefault('updated_dm_test_domain_translations_list', $this->object->UpdatedDmTestDomainTranslations->getPrimaryKeys());
+        $this->setDefault('updated_dm_test_domain_translations_list', array_merge((array)$this->getDefault('updated_dm_test_domain_translations_list'),$this->object->UpdatedDmTestDomainTranslations->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['dm_user_group_list']))
     {
-      $this->setDefault('dm_user_group_list', $this->object->DmUserGroup->getPrimaryKeys());
+        $this->setDefault('dm_user_group_list', array_merge((array)$this->getDefault('dm_user_group_list'),$this->object->DmUserGroup->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['dm_user_permission_list']))
     {
-      $this->setDefault('dm_user_permission_list', $this->object->DmUserPermission->getPrimaryKeys());
+        $this->setDefault('dm_user_permission_list', array_merge((array)$this->getDefault('dm_user_permission_list'),$this->object->DmUserPermission->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['dm_record_permission_user_list']))
     {
-      $this->setDefault('dm_record_permission_user_list', $this->object->DmRecordPermissionUser->getPrimaryKeys());
+        $this->setDefault('dm_record_permission_user_list', array_merge((array)$this->getDefault('dm_record_permission_user_list'),$this->object->DmRecordPermissionUser->getPrimaryKeys()));
     }
 
     if (isset($this->widgetSchema['dm_record_permission_association_user_list']))
     {
-      $this->setDefault('dm_record_permission_association_user_list', $this->object->DmRecordPermissionAssociationUser->getPrimaryKeys());
+        $this->setDefault('dm_record_permission_association_user_list', array_merge((array)$this->getDefault('dm_record_permission_association_user_list'),$this->object->DmRecordPermissionAssociationUser->getPrimaryKeys()));
     }
 
   }

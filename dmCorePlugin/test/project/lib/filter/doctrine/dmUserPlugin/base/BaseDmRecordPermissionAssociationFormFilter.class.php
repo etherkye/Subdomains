@@ -20,15 +20,15 @@ abstract class BaseDmRecordPermissionAssociationFormFilter extends BaseFormFilte
 		}
 		if($this->needsWidget('dm_secure_action')){
 			$this->setWidget('dm_secure_action', new sfWidgetFormDmFilterInput());
-			$this->setValidator('dm_secure_action', new sfValidatorString(array('required' => false)));
+			$this->setValidator('dm_secure_action', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('dm_secure_module')){
 			$this->setWidget('dm_secure_module', new sfWidgetFormDmFilterInput());
-			$this->setValidator('dm_secure_module', new sfValidatorString(array('required' => false)));
+			$this->setValidator('dm_secure_module', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 		if($this->needsWidget('dm_secure_model')){
 			$this->setWidget('dm_secure_model', new sfWidgetFormDmFilterInput());
-			$this->setValidator('dm_secure_model', new sfValidatorString(array('required' => false)));
+			$this->setValidator('dm_secure_model', new sfValidatorSchemaFilter('text', new sfValidatorString(array('required' => false))));
 		}
 
 		if($this->needsWidget('groups_list')){
