@@ -133,7 +133,7 @@ $t->ok($widgetView->isRequiredVar('items'), 'items is a view required var');
 
 $expected = $helper->get('menu')
 ->ulClass('')
-->addChild('0-home', 'page:1')->label('Home')->end()
+->addChild('0-home', 'page:1')->label('Home')->showId(true)->end()
 ->render();
 $t->is($widgetView->render(), $expected, 'render : '.$expected);
 
@@ -221,24 +221,25 @@ $widgetView = $widgetRenderer->getWidgetView();
 
 $expectedMenu = $helper->get('menu')
 ->ulClass('my_ul_class')
-->addChild('0-home', 'page:1')->label('Home')->liClass('my_li_class')->end()
-->addChild('1-page-1', 'page:'.$page1->id)->label('Page 1')->liClass('my_li_class')->end()
-->addChild('2-nolink', '')->label('nolink')->liClass('my_li_class')->end()
-->addChild('3-jquery', 'http://jquery.com')->label('jquery')->liClass('my_li_class')->end();
+->name('my_menu_name')
+->addChild('0-home', 'page:1')->label('Home')->liClass('my_li_class')->showId(true)->end()
+->addChild('1-page-1', 'page:'.$page1->id)->label('Page 1')->liClass('my_li_class')->showId(true)->end()
+->addChild('2-nolink', '')->label('nolink')->liClass('my_li_class')->showId(true)->end()
+->addChild('3-jquery', 'http://jquery.com')->label('jquery')->liClass('my_li_class')->showId(true)->end();
 
 $t->comment('Authenticate the user');
 $helper->get('user')->setAuthenticated(true);
 
-$expectedMenu->addChild('4-mail', 'mailto:mail@a.com')->label('mail')->liClass('my_li_class')->end();
+$expectedMenu->addChild('4-mail', 'mailto:mail@a.com')->label('mail')->liClass('my_li_class')->showId(true)->end();
 $expectedMenu['4-mail']->getLink()->set('rel', 'nofollow');
 
 $t->is($widgetView->render(), $expectedMenu->render(), 'render : '.$expectedMenu->render());
 
-$t->like($widgetView->render(), '|<li class="my_li_class">nolink</li>|', 'Menu contains a non link');
+$t->like($widgetView->render(), '|<li id="menu-my_menu_name-2-nolink" class="my_li_class">nolink</li>|', 'Menu contains a non link');
 
-$t->like($widgetView->render(), '|<li class="my_li_class"><a class="link" href="http://jquery.com">jquery</a></li>|', 'Menu contains a external link');
+$t->like($widgetView->render(), '|<li id="menu-my_menu_name-3-jquery" class="my_li_class"><a class="link" href="http://jquery.com">jquery</a></li>|', 'Menu contains a external link');
 
-$t->like($widgetView->render(), '|<li class="last my_li_class"><a class="link" href="mailto:mail@a.com" rel="nofollow">mail</a></li>|', 'Menu contains a mailto:');
+$t->like($widgetView->render(), '|<li id="menu-my_menu_name-4-mail" class="last my_li_class"><a class="link" href="mailto:mail@a.com" rel="nofollow">mail</a></li>|', 'Menu contains a mailto:');
 
 $t->is($widgetView->renderForIndex(), '', 'render for index is empty');
 
@@ -306,7 +307,8 @@ $widgetView = $widgetRenderer->getWidgetView();
 
 $expected = $helper->get('menu')
 ->ulClass('my_ul_class')
-->addChild('0-home', 'page:1')->label('Home')->liClass('my_li_class')->end()
-->addChild('1-page-1', 'page:'.$page1->id)->label('Page 1')->liClass('my_li_class')->addRecursiveChildren(1)->end()
+->name('my_menu_name')
+->addChild('0-home', 'page:1')->label('Home')->liClass('my_li_class')->showId(true)->end()
+->addChild('1-page-1', 'page:'.$page1->id)->label('Page 1')->liClass('my_li_class')->showId(true)->addRecursiveChildren(1)->end()
 ->render();
 $t->is($widgetView->render(), $expected, 'render : '.$expected);

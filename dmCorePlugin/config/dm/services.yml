@@ -215,7 +215,7 @@ services:
   domain:
     class:                    %domain.class%
     shared:                   true
-    arguments:                [ ]
+    arguments:                [ %request.context% ]
 
   text_diff:
     class:                    %text_diff.class%

@@ -3,24 +3,30 @@
 class dmDomain extends dmConfigurable {
 
     protected
+    $requestContext,
     $domain,
     $subdomain,
     $defaultSubdomain;
 
-    public function __construct(array $options = array()) {
+    public function __construct(array $requestContext, array $options = array()) {
+        $this->requestContext = $requestContext;
         $this->initialize($options);
     }
 
     protected function initialize(array $options = array()) {
         $this->domain = dmConfig::get('site_url');
-        if (empty($this->domain)) {
+
+        $this->defaultSubdomain = dmConfig::get('site_subdomain_default');
+
+        if(!isset($_SERVER['SERVER_NAME'])){ //Command line stuff
+          $this->domain = "";
+          $this->subdomain = "";
+        }elseif (empty($this->domain)) {
             $this->domain = $this->generateDomain($_SERVER['SERVER_NAME']);
             $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
         }else{
           $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
         }
-
-        $this->defaultSubdomain = dmConfig::get('site_subdomain_default');
 
         $this->configure($options);
     }
@@ -107,7 +113,7 @@ class dmDomain extends dmConfigurable {
         if ($subdomain == "DEFAULT") {
             $subdomain = dmConfig::get('site_subdomain_default');
         }
-        return $subdomain == $this->subdomain;
+        return ($subdomain == $this->subdomain);
     }
     
     /**
@@ -117,14 +123,17 @@ class dmDomain extends dmConfigurable {
      * 
      * @return string
      */
-    private function checkPrefix($prefix){
-        if(substr($prefix,0,1) != '/'){
-            $prefix = '/'.$prefix;
-        }
-        if(substr($prefix,strlen($prefix)-1,1) == '/'){
-            $prefix = substr($prefix,0,-1);
-        }
-        return $prefix;
+    private function checkPrefix($prefix) {
+      if (substr($prefix, 0, 1) != '/') {
+        $prefix = '/' . $prefix;
+      }
+//      if (!isset($_SERVER['SERVER_NAME'])) {
+//        $prefix = $this->requestContext['relative_url_root'] . $prefix;
+//      }
+      if (substr($prefix, strlen($prefix) - 1, 1) == '/') {
+        $prefix = substr($prefix, 0, -1);
+      }
+      return $prefix;
     }
 
     /**
@@ -202,7 +211,7 @@ class dmDomain extends dmConfigurable {
      * For sitemaps.
      */
     public function setDefaultSubdomain($subdomain){
-      $this->defaultsubdomain = $subdomain;
+      $this->defaultSubdomain = $subdomain;
     }
 
     /**
@@ -213,7 +222,7 @@ class dmDomain extends dmConfigurable {
      */
     public function printSubdomain($subdomain){
         if ($subdomain == "DEFAULT") {
-            $subdomain = $this->defaultsubdomain;
+            $subdomain = $this->defaultSubdomain;
         }
 
         return (!empty($subdomain)?$subdomain.".":"");

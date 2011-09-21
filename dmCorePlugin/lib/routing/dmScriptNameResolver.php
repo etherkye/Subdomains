@@ -36,7 +36,7 @@ class dmScriptNameResolver
         throw new dmException(sprintf('Diem can not guess %s app url', $app));
       }
         if ($subdomain == "DEFAULT") {
-            $appUrl = $this->requestContext['absolute_url_root'] .'/'.$script;
+            $appUrl = $this->requestContext['relative_url_root'] .'/'.$script;
         }else{
             $appUrl = implode('://'.$subdomain.'.',explode('://',$this->requestContext['absolute_url_root'])) .'/'.$script;
         }
