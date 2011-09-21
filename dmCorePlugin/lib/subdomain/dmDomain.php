@@ -4,7 +4,8 @@ class dmDomain extends dmConfigurable {
 
     protected
     $domain,
-    $subdomain;
+    $subdomain,
+    $defaultSubdomain;
 
     public function __construct(array $options = array()) {
         $this->initialize($options);
@@ -18,6 +19,8 @@ class dmDomain extends dmConfigurable {
         }else{
           $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
         }
+
+        $this->defaultSubdomain = dmConfig::get('site_subdomain_default');
 
         $this->configure($options);
     }
@@ -195,6 +198,13 @@ class dmDomain extends dmConfigurable {
         return $this->subdomain;
     }
 
+    /*
+     * For sitemaps.
+     */
+    public function setDefaultSubdomain($subdomain){
+      $this->defaultsubdomain = $subdomain;
+    }
+
     /**
      * Converts DEFAULT into printable subdomain and appends a '.' to the end for simplicity of printing
      *
@@ -203,7 +213,7 @@ class dmDomain extends dmConfigurable {
      */
     public function printSubdomain($subdomain){
         if ($subdomain == "DEFAULT") {
-            $subdomain = dmConfig::get('site_subdomain_default');
+            $subdomain = $this->defaultsubdomain;
         }
 
         return (!empty($subdomain)?$subdomain.".":"");

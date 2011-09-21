@@ -22,9 +22,6 @@ class dmXmlSitemapGenerator extends dmConfigurable
 
   protected function initialize(array $options) {
         $this->domain = $this->serviceContainer->getService('domain');
-        if(strlen($this->getOption('domain')) > 2){
-            $this->setDomain();
-        }
         $this->notIn = sfConfig::has('app_sitemap_not_in')?sfConfig::get('app_sitemap_not_in'):array();
         $this->configure($options);
     }
@@ -265,7 +262,7 @@ class dmXmlSitemapGenerator extends dmConfigurable
       throw new dmException('You must give a domain option like www.my-domain.com');
     }else{
       $this->domain = $this->domain->setDomain($this->getOption('domain'));
-      dmConfig::set('site_subdomain_default',$this->domain->getSubdomain());
+      $this->domain->setDefaultSubdomain($this->domain->generateSubDomain($this->getOption('domain')));
     }
   }
 }
