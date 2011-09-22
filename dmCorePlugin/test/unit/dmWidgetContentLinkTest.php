@@ -198,7 +198,7 @@ $t->isa_ok($widgetView, $widgetType->getOption('view_class'), 'The widget view i
 $t->ok(!$widgetView->isRequiredVar('mediaId'), 'mediaId is not a view required var');
 $t->ok($widgetView->isRequiredVar('href'), 'href is a view required var');
 
-$expected = $helper->get('helper')->link($internalUrl)->addClass('test css_class')->text('test text')->title('test title')->render();
+$expected = $helper->get('helper')->link($internalUrl)->text('test text')->title('test title')->render();
 $t->is($widgetView->render(array('cssClass' => 'test css_class')), $expected, 'render : '.$expected);
 
 $t->is($widgetView->renderForIndex(), $expected = 'test text test title', 'render for index is '.$expected);
