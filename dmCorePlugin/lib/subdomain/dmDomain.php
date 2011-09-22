@@ -18,14 +18,14 @@ class dmDomain extends dmConfigurable {
 
         $this->defaultSubdomain = dmConfig::get('site_subdomain_default');
 
-        if(!isset($_SERVER['SERVER_NAME'])){ //Command line stuff
-          $this->domain = "";
-          $this->subdomain = "";
-        }elseif (empty($this->domain)) {
-            $this->domain = $this->generateDomain($_SERVER['SERVER_NAME']);
-            $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
-        }else{
+        if(!empty($this->domain)){
           $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
+        }else if(isset($_SERVER['SERVER_NAME'])){
+          $this->domain = $this->generateDomain($_SERVER['SERVER_NAME']);
+          $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
+        }else{
+          $this->domain = $this->generateDomain($this->requestContext['absolute_url_root']);
+          $this->subdomain = "FALSE";
         }
 
         $this->configure($options);
@@ -128,7 +128,7 @@ class dmDomain extends dmConfigurable {
         $prefix = '/' . $prefix;
       }
 //      if (!isset($_SERVER['SERVER_NAME'])) {
-//        $prefix = $this->requestContext['relative_url_root'] . $prefix;
+//        $prefix = $this->serviceContainer->getService('script_name_resolver')->get();
 //      }
       if (substr($prefix, strlen($prefix) - 1, 1) == '/') {
         $prefix = substr($prefix, 0, -1);
