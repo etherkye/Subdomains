@@ -113,7 +113,7 @@ class dmAdminLinkTag extends dmBaseLinkTag
 
                 $prefix = $this->serviceContainer->getService('script_name_resolver')->guessBootScriptFromWebDir($app,null);
 
-                $resource = $this->serviceContainer->getService('domain')->returnLink($prefix, $slug, $subdomain);
+                $resource = $this->serviceContainer->getService('domain')->returnLink($prefix, $slug, $subdomain,true);
             } elseif ($resource{0} === '/') {
                 /*
                  * add relativeUrlRoot to absolute resource
