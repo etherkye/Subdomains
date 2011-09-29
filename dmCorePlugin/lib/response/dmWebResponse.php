@@ -317,5 +317,34 @@ class dmWebResponse extends sfWebResponse
   public function getAllXmlNs() {
       return $this->xmlns;
   }
+
+  public function setCookie($name, $value, $expire = null, $path = '/', $domain = '', $secure = false, $httpOnly = false)
+  {
+    if ($expire !== null)
+    {
+      if (is_numeric($expire))
+      {
+        $expire = (int) $expire;
+      }
+      else
+      {
+        $expire = strtotime($expire);
+        if ($expire === false || $expire == -1)
+        {
+          throw new sfException('Your expire parameter is not valid.');
+        }
+      }
+    }
+    //@todo add check to stop empty domains
+    $this->cookies[$name] = array(
+      'name'     => $name,
+      'value'    => $value,
+      'expire'   => $expire,
+      'path'     => $path,
+      'domain'   => $domain,
+      'secure'   => $secure ? true : false,
+      'httpOnly' => $httpOnly,
+    );
+  }
   
 }
