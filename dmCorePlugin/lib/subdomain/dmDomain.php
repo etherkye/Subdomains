@@ -18,15 +18,17 @@ class dmDomain extends dmConfigurable {
 
         $this->defaultSubdomain = dmConfig::get('site_subdomain_default');
 
-        if(!empty($this->domain)){
-          $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
-        }else if(isset($_SERVER['SERVER_NAME'])){
+        if(!empty($this->domain) && isset($_SERVER['SERVER_NAME'])){
           $this->domain = $this->generateDomain($_SERVER['SERVER_NAME']);
+        }else{
+          $this->domain = str_replace("http://","",$this->requestContext['absolute_url_root']);
+          $this->subdomain = "FALSE";
+        }
+
+        if(isset($_SERVER['SERVER_NAME'])){
           $this->subdomain = $this->generateSubDomain($_SERVER['SERVER_NAME'], $this->domain);
         }else{
-          //$this->domain = $this->generateDomain($this->requestContext['absolute_url_root']);
-          $this->domain = str_replace("http://","",$this->requestContext['absolute_url_root']);
-          $this->subdomain = "FALSE";//$this->generateSubDomain($this->requestContext['absolute_url_root'], $this->domain);
+          $this->subdomain = "FALSE";
         }
 
         $this->configure($options);

@@ -16,5 +16,37 @@
  */
 class dmSessionStorage extends sfSessionStorage
 {
-	
+
+  protected
+  $serviceContainer;
+
+  public function initialize($options = null)
+  {
+    $this->options = $options;
+  }
+
+  public function setCookieParams($options = null)
+  {
+    if(null === $options){
+      $options = $this->options;
+    }
+
+    if(!isset($options['session_cookie_domain']) || $options['session_cookie_domain'] == ''){
+      $options['session_cookie_domain']  = '.'.($this->getServiceContainer()->getService('domain')->getDomain());
+    }
+
+    parent::initialize($options);
+  }
+
+  public function setServiceContainer(dmBaseServiceContainer $serviceContainer)
+  {
+      $this->serviceContainer = $serviceContainer;
+
+      return $this;
+  }
+
+  public function getServiceContainer()
+  {
+    return $this->serviceContainer;
+  }
 }
