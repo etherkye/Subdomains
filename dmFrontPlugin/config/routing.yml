@@ -6,7 +6,7 @@ default:
   url:          /+/:module/:action/*
 
 toAdmin:
-  url:          /admin
+  url:          /admin/
   params:       { module: dmFront, action: toAdmin }
 
 signin:
