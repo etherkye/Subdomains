@@ -66,6 +66,7 @@ class dmWebResponse extends sfWebResponse
   public function listenToSignOutEvent(sfEvent $event)
   {
     $this->setCookie($this->getRememberCookieName(), '', time() - $event['expiration_age']);
+    $this->setCookie($this->getRememberCookieName(), '', time() - $event['expiration_age'],'/','.'.sfContext::getInstance()->getServiceContainer()->getService('domain')->getDomain());
   }
   
   public function getRememberCookieName()
