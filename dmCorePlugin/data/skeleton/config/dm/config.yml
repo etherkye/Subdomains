@@ -36,6 +36,18 @@ all:
     report_anonymous_data: ##SEND_REPORTS##         # reports anonymous data about plugins used.
                                         # http://diem-project.org/plugins will show the best plugins based on these reports.
                                         # the report request is sent only once, when a superadministrator logs in.
+
+  cdn:
+    js:
+      enabled:   false
+    css:
+      enabled:   false
+    default:
+      enabled:  false                   # default FALSE
+      number:   2                       # default 2
+      name:     cdn                     # default 'cdn'
+      start:    1                       # default 1
+
 dev: 
   js:
     compress: false

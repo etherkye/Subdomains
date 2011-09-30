@@ -30,6 +30,9 @@ parameters:
   link_tag_error.class:       dmFrontLinkTagError   # Responsible for rendering a link tag to an exception with the £link helper. Configurable from the graphical configuration panel.
   link_tag_error.options:     []
 
+  link_tag_app.class:         dmFrontLinkTagApp     # Responsible for rendering a link tag to an app instance with the £link helper. Configurable from the graphical configuration panel.
+  link_tag_app.options:       []
+
   link_resource.class:        dmFrontLinkResource   # Ressource for a link_tag_*.
     
   link_tag_factory.class:     dmFrontLinkTagFactory # Builds a link_tag service from a source
@@ -116,6 +119,11 @@ services:
     class:                    %link_tag_uri.class%
     shared:                   false
     arguments:                [ %link_tag.resource%, @controller, %request.context%, %link_tag_uri.options% ]
+
+  link_tag_app:
+    class:                    %link_tag_app.class%
+    shared:                   false
+    arguments:                [ %link_tag.resource%, @service_container, %request.context%, %link_tag_app.options% ]
 
   link_tag_route:
     class:                    %link_tag_route.class%

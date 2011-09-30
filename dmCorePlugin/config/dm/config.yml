@@ -69,6 +69,13 @@ default:
     page_cache:                         # Will cache entire pages and serve them very fast.
       enabled:            false         # Enable the page cache for all pages
       life_time:          86400         # Server-side lifetime of the cache in seconds (86400 seconds equals one day)
+
+
+  subdomains:
+    admin:
+      subdomain:             false      # false by default, if not false, the value will be the subdomain for the admin.
+      redirect:              true       # if true will 301 to the subdomain, else the server code provided (e.g. 404)
+
  
 ###### dm internal config ######
   

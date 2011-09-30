@@ -106,9 +106,12 @@ class dmFrontLinkResource
         {
           $slug = '';
         }
+
+        $config = sfConfig::get("dm_subdomains_".$app,array('subdomain'=>false));
         
-        $this->type = 'uri';
-        $this->subject = dmContext::hasInstance() ? dmContext::getInstance()->get('script_name_resolver')->get($app).$slug : $slug;
+        $this->type = 'app';
+        $this->subject = array('uri'       => (dmContext::hasInstance() ? dmContext::getInstance()->get('script_name_resolver')->guessBootScriptFromWebDir($app,null).$slug : $slug),
+                               'subdomain' => $config['subdomain']);
       }
       elseif (strncmp($source, '@', 1) === 0)
       {
