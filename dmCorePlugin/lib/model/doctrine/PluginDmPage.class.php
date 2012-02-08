@@ -360,7 +360,7 @@ LIMIT 1')->getStatement();
   }
 
   public function getCulture(){
-    if ($page->get('Translation')->contains(sfConfig::get('sf_default_culture')))
+    if ($this->get('Translation')->contains(sfConfig::get('sf_default_culture')))
     {
       $culture = sfConfig::get('sf_default_culture');
     }
